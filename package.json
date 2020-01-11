@@ -1,0 +1,17 @@
+{
+  "name": "health-clinic-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run-db-server": "\"C:\\Program Files\\MongoDB\\Server\\4.2\\bin\\mongod.exe\" --dbpath=\"C:\\data\\db\"",
+    "connect-db-server": "C:\\Program Files\\MongoDB\\Server\\4.2\\bin\\mongo.exe",
+    "dev": "nodemon index"
+  },
+  "author": "arthur torres",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
