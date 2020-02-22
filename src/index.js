@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const db = require("./database/config");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const routes = require("./app/routes/index");
+const db = require('./database/config');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const routes = require('./app/routes/index');
 
 const port = 3000;
 
