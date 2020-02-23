@@ -1,38 +1,34 @@
-const Convenio = require('../models/Convenio.js');
+const Convenio = require('../models/Convenio');
 
 //ONLY ADMIN
-exports.create = (req, res) => {
-    Convenio.findOne( { nome : req.body.nome } )
-        .then(convenioExistente => {
-            if(convenioExistente){
-                return res.status(409).send(
-                    {message: "Convênio " + req.body.nome + " já existente"}
-                );
-            
-            } else{
-                const data = {
-                    nome : req.body.nome,
-                    ativo : true
-                }
+exports.create = async (req, res) => {
+    const data = {
+        nome : req.body.nome,
+        ativo : true
+    }
 
-                var validationError = Convenio.joiValidate(data);
+    var validationError = Convenio.joiValidate(data);
 
-                if(validationError.error) return res.status(400).send({
-                    message: validationError.error.details[0].message || "Erro nos dados do Convênio."
-                });
-            
-                const convenio = new Convenio(data);
+    if(validationError.error) return res.status(400).send({
+        message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Convênio"
+    });
 
-                convenio.save()
-                .then(data => {
-                    res.send(data);
-                }).catch(err => {
-                    res.status(500).send({
-                        message: err.message || "Erro ao gravar Convênio."
-                    });
-                });
-            }
-        })
+    const convenio = new Convenio(data);
+
+    convenio.save()
+    .then(data => {
+        return res.send(data);
+    }).catch(err => {
+        if(err.code === 11000){
+            const duplicatedKey = Object.keys(err.keyValue)[0];
+            const duplicatedValue = err.keyValue[duplicatedKey];
+            return res.status(409).send({message: "Convênio com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+        }
+
+        return res.status(500).send({
+            message: err.message || "Erro ao gravar Convênio"
+        });
+    });
 };
 
 exports.findAll = (req, res) => {
@@ -45,13 +41,13 @@ exports.findAll = (req, res) => {
         .skip((limitPerPage*page) - limitPerPage)
         .limit(limitPerPage)
         .then(convenios => {
-            res.send({
+            return res.send({
                 convenios,
                 page
             });
         }).catch(err => {
-            res.status(500).send({
-                message: err.message || "Erro ao buscar lista de Convênios."
+            return res.status(500).send({
+                message: err.message || "Erro ao buscar lista de Convênios"
             });
         });
 };
@@ -59,7 +55,9 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     Convenio.findById(req.params.convenioId)
     .then(convenio => {
-        if(convenio) return res.send(convenio);
+        if(convenio){
+            return res.send(convenio);
+        }
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
@@ -73,22 +71,29 @@ exports.findOne = (req, res) => {
 };
 
 //ONLY ADMIN
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     var validationError = Convenio.joiValidate(req.body);
 
     if(validationError.error) return res.status(400).send({
-        message: validationError.error.details[0].message || "Erro nos dados do Convênio."
+        message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Convênio"
     });
 
     Convenio.findByIdAndUpdate(req.params.convenioId, req.body, {new: true})
-    .then(note => {
-        if(note) res.send(note);
+    .then(convenio => {
+        if(convenio) return res.send(convenio);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
                 message: "Convênio não encontrado com id " + req.params.convenioId
             });                
         }
+
+        if(err.code === 11000){
+            const duplicatedKey = Object.keys(err.keyValue)[0];
+            const duplicatedValue = err.keyValue[duplicatedKey];
+            return res.status(409).send({message: "Convênio com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+        }
+
         return res.status(500).send({
             message: "Erro ao atualizar Convênio com id " + req.params.convenioId
         });
@@ -99,7 +104,7 @@ exports.update = (req, res) => {
 exports.inactivate = (req, res) => {
     Convenio.findByIdAndUpdate(req.params.convenioId, { ativo : false })
     .then(convenio => {
-        if(convenio) res.send({message: "Convênio inativado com sucesso"});
+        if(convenio) return res.send({message: "Convênio inativado com sucesso"});
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             return res.status(404).send({
@@ -116,7 +121,7 @@ exports.inactivate = (req, res) => {
 exports.activate = (req, res) => {
     Convenio.findByIdAndUpdate(req.params.convenioId, { ativo : true })
     .then(convenio => {
-        if(convenio) res.send({message: "Convênio ativado com sucesso"});
+        if(convenio) return res.send({message: "Convênio ativado com sucesso"});
     }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             return res.status(404).send({

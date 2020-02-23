@@ -4,9 +4,9 @@ const Joi = require('@hapi/joi');
 const RecepcionistaSchema = mongoose.Schema(
     {
         nome : String,
-        login : String,
+        login : { type: String, unique : true },
         senha : String,
-        cpf : String,
+        cpf : { type: String, unique : true },
         email : String,
         telefone : String,
         dataDeNascimento : Date,

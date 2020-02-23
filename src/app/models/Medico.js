@@ -4,12 +4,12 @@ const Joi = require('@hapi/joi');
 const MedicoSchema = mongoose.Schema(
     {
         nome : String,
-        login : String,
+        login : { type: String, unique : true },
         senha : String,
-        cpf : String,
+        cpf : { type: String, unique : true },
         email : String,
         telefone : String,
-        crm : String,
+        crm : { type: String, unique : true },
         dataDeNascimento : Date,
         dataDeAdmissão : Date,
         ativo : Boolean

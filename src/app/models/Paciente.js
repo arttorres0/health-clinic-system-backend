@@ -4,7 +4,7 @@ const Joi = require('@hapi/joi');
 const PacienteSchema = mongoose.Schema(
     {
         nome : String,
-        cpf : String,
+        cpf : { type: String, unique : true },
         email : String,
         telefone : String,
         dataDeNascimento : Date,

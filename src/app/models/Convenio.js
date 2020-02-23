@@ -3,7 +3,7 @@ const Joi = require('@hapi/joi');
 
 const ConvenioSchema = mongoose.Schema(
     {
-        nome : String,
+        nome : { type: String, unique : true },
         ativo : Boolean
     },
     {
