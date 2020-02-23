@@ -16,19 +16,20 @@ exports.create = async (req, res) => {
     const convenio = new Convenio(data);
 
     convenio.save()
-    .then(data => {
-        return res.send(data);
-    }).catch(err => {
-        if(err.code === 11000){
-            const duplicatedKey = Object.keys(err.keyValue)[0];
-            const duplicatedValue = err.keyValue[duplicatedKey];
-            return res.status(409).send({message: "Convênio com " + duplicatedKey + " " + duplicatedValue + " já existente"});
-        }
+        .then(data => {
+            return res.send(data);
+        
+        }).catch(err => {
+            if(err.code === 11000){
+                const duplicatedKey = Object.keys(err.keyValue)[0];
+                const duplicatedValue = err.keyValue[duplicatedKey];
+                return res.status(409).send({message: "Convênio com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+            }
 
-        return res.status(500).send({
-            message: err.message || "Erro ao gravar Convênio"
+            return res.status(500).send({
+                message: err.message || "Erro ao gravar Convênio"
+            });
         });
-    });
 };
 
 exports.findAll = (req, res) => {
@@ -45,6 +46,7 @@ exports.findAll = (req, res) => {
                 convenios,
                 page
             });
+
         }).catch(err => {
             return res.status(500).send({
                 message: err.message || "Erro ao buscar lista de Convênios"
@@ -54,20 +56,22 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     Convenio.findById(req.params.convenioId)
-    .then(convenio => {
-        if(convenio){
-            return res.send(convenio);
-        }
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        .then(convenio => {
+            if(convenio) return res.send(convenio);
+
             return res.status(404).send({
                 message: "Convênio não encontrado com id " + req.params.convenioId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao buscar Convênio com id " + req.params.convenioId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') return res.status(404).send({
+                message: "Convênio não encontrado com id " + req.params.convenioId
+            });
+
+            return res.status(500).send({
+                message: "Erro ao buscar Convênio com id " + req.params.convenioId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
@@ -79,57 +83,70 @@ exports.update = async (req, res) => {
     });
 
     Convenio.findByIdAndUpdate(req.params.convenioId, req.body, {new: true})
-    .then(convenio => {
-        if(convenio) return res.send(convenio);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        .then(convenio => {
+            if(convenio) return res.send(convenio);
+
             return res.status(404).send({
                 message: "Convênio não encontrado com id " + req.params.convenioId
-            });                
-        }
+            });
 
-        if(err.code === 11000){
-            const duplicatedKey = Object.keys(err.keyValue)[0];
-            const duplicatedValue = err.keyValue[duplicatedKey];
-            return res.status(409).send({message: "Convênio com " + duplicatedKey + " " + duplicatedValue + " já existente"});
-        }
+        }).catch(err => {
+            if(err.kind === 'ObjectId') return res.status(404).send({
+                message: "Convênio não encontrado com id " + req.params.convenioId
+            });
 
-        return res.status(500).send({
-            message: "Erro ao atualizar Convênio com id " + req.params.convenioId
+            if(err.code === 11000){
+                const duplicatedKey = Object.keys(err.keyValue)[0];
+                const duplicatedValue = err.keyValue[duplicatedKey];
+                return res.status(409).send({message: "Convênio com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+            }
+
+            return res.status(500).send({
+                message: "Erro ao atualizar Convênio com id " + req.params.convenioId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
 exports.inactivate = (req, res) => {
     Convenio.findByIdAndUpdate(req.params.convenioId, { ativo : false })
-    .then(convenio => {
-        if(convenio) return res.send({message: "Convênio inativado com sucesso"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        .then(convenio => {
+            if(convenio) return res.send({message: "Convênio inativado com sucesso"});
+
             return res.status(404).send({
                 message: "Convênio não encontrado com id " + req.params.convenioId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao inativar Convênio com id " + req.params.convenioId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Convênio não encontrado com id " + req.params.convenioId
+                });
+            }
+            return res.status(500).send({
+                message: "Erro ao inativar Convênio com id " + req.params.convenioId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
 exports.activate = (req, res) => {
     Convenio.findByIdAndUpdate(req.params.convenioId, { ativo : true })
-    .then(convenio => {
-        if(convenio) return res.send({message: "Convênio ativado com sucesso"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        .then(convenio => {
+            if(convenio) return res.send({message: "Convênio ativado com sucesso"});
+
             return res.status(404).send({
                 message: "Convênio não encontrado com id " + req.params.convenioId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao ativar Convênio com id " + req.params.convenioId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Convênio não encontrado com id " + req.params.convenioId
+                });                
+            }
+            return res.status(500).send({
+                message: "Erro ao ativar Convênio com id " + req.params.convenioId
+            });
         });
-    });
 };

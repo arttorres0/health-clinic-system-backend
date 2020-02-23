@@ -29,19 +29,20 @@ exports.create = async (req, res) => {
     const medico = new Medico(data);
 
     medico.save()
-    .then(data => {
-        return res.send(data);
-    }).catch(err => {
-        if(err.code === 11000){
-            const duplicatedKey = Object.keys(err.keyValue)[0];
-            const duplicatedValue = err.keyValue[duplicatedKey];
-            return res.status(409).send({message: "Médico com " + duplicatedKey + " " + duplicatedValue + " já existente"});
-        }
+        .then(data => {
+            return res.send(data);
+        
+        }).catch(err => {
+            if(err.code === 11000){
+                const duplicatedKey = Object.keys(err.keyValue)[0];
+                const duplicatedValue = err.keyValue[duplicatedKey];
+                return res.status(409).send({message: "Médico com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+            }
 
-        return res.status(500).send({
-            message: err.message || "Erro ao gravar Médico"
+            return res.status(500).send({
+                message: err.message || "Erro ao gravar Médico"
+            });
         });
-    });
 };
 
 exports.findAll = (req, res) => {
@@ -66,6 +67,7 @@ exports.findAll = (req, res) => {
                 medicos,
                 page
             });
+
         }).catch(err => {
             return res.status(500).send({
                 message: err.message || "Erro ao buscar lista de Médicos"
@@ -75,23 +77,27 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     Medico.findById(req.params.medicoId)
-    .then(medico => {
-        if(medico){
-            //TODO: only returns this values if logged in user is ADMIN
-            medico.login = undefined;
-            medico.senha = undefined;
-            return res.send(medico);
-        }
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        .then(medico => {
+            if(medico){
+                //TODO: only returns this values if logged in user is ADMIN
+                medico.login = undefined;
+                medico.senha = undefined;
+                return res.send(medico);
+            }
+
             return res.status(404).send({
-                message: "Medico não encontrado com id " + req.params.medicoId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao buscar Médico com id " + req.params.medicoId
+                message: "Médico não encontrado com id " + req.params.medicoId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') return res.status(404).send({
+                message: "Médico não encontrado com id " + req.params.medicoId
+            });
+
+            return res.status(500).send({
+                message: "Erro ao buscar Médico com id " + req.params.medicoId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
@@ -102,77 +108,83 @@ exports.update = async (req, res) => {
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Médico"
     });
 
-    if(await loginAlreadyExistsInOtherRole(req.body.login, req.params.medicoId)) return res.status(400).send({
+    if(await loginAlreadyExistsInOtherRole(req.body.login)) return res.status(400).send({
         message: "Outro usuário do sistema já possui o login " + req.body.login
     });
 
     Medico.findByIdAndUpdate(req.params.medicoId, req.body, {new: true})
-    .then(medico => {
-        if(medico) return res.send(medico);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        .then(medico => {
+            if(medico) return res.send(medico);
+
             return res.status(404).send({
                 message: "Médico não encontrado com id " + req.params.medicoId
-            });                
-        }
+            });
 
-        if(err.code === 11000){
-            const duplicatedKey = Object.keys(err.keyValue)[0];
-            const duplicatedValue = err.keyValue[duplicatedKey];
-            return res.status(409).send({message: "Médico com " + duplicatedKey + " " + duplicatedValue + " já existente"});
-        }
+        }).catch(err => {
+            if(err.kind === 'ObjectId') return res.status(404).send({
+                message: "Médico não encontrado com id " + req.params.medicoId
+            });
 
-        return res.status(500).send({
-            message: "Erro ao atualizar Médico com id " + req.params.medicoId
+            if(err.code === 11000){
+                const duplicatedKey = Object.keys(err.keyValue)[0];
+                const duplicatedValue = err.keyValue[duplicatedKey];
+                return res.status(409).send({message: "Médico com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+            }
+
+            return res.status(500).send({
+                message: "Erro ao atualizar Médico com id " + req.params.medicoId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
 exports.inactivate = (req, res) => {
     Medico.findByIdAndUpdate(req.params.medicoId, { ativo : false })
-    .then(medico => {
-        if(medico) return res.send({message: "Médico inativado com sucesso"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        .then(medico => {
+            if(medico) return res.send({message: "Médico inativado com sucesso"});
+
             return res.status(404).send({
                 message: "Médico não encontrado com id " + req.params.medicoId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao inativar Médico com id " + req.params.medicoId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Médico não encontrado com id " + req.params.medicoId
+                });
+            }
+            return res.status(500).send({
+                message: "Erro ao inativar Médico com id " + req.params.medicoId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
 exports.activate = (req, res) => {
     Medico.findByIdAndUpdate(req.params.medicoId, { ativo : true })
-    .then(medico => {
-        if(medico) return res.send({message: "Médico ativado com sucesso"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        .then(medico => {
+            if(medico) return res.send({message: "Médico ativado com sucesso"});
+
             return res.status(404).send({
                 message: "Médico não encontrado com id " + req.params.medicoId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao ativar Médico com id " + req.params.medicoId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Médico não encontrado com id " + req.params.medicoId
+                });                
+            }
+            return res.status(500).send({
+                message: "Erro ao ativar Médico com id " + req.params.medicoId
+            });
         });
-    });
 };
 
-async function loginAlreadyExistsInOtherRole(login, id=null){
+async function loginAlreadyExistsInOtherRole(login){
     if(login === "admin") return true;
 
-    if(id){
-        var result = await Recepcionista.findOne({login, _id : {$ne : id}});
-        if(result) return true;
-        return false;
-
-    } else{
-        var result = await Recepcionista.findOne({login : login});
-        if(result) return true;
-        return false;
-    }
+    var result = await Recepcionista.findOne({login : login});
+    if(result) return true;
+    return false;
 }

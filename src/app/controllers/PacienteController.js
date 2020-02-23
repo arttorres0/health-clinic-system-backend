@@ -20,19 +20,20 @@ exports.create = async (req, res) => {
     const paciente = new Paciente(data);
 
     paciente.save()
-    .then(data => {
-        return res.send(data);
-    }).catch(err => {
-        if(err.code === 11000){
-            const duplicatedKey = Object.keys(err.keyValue)[0];
-            const duplicatedValue = err.keyValue[duplicatedKey];
-            return res.status(409).send({message: "Paciente com " + duplicatedKey + " " + duplicatedValue + " já existente"});
-        }
+        .then(data => {
+            return res.send(data);
+        
+        }).catch(err => {
+            if(err.code === 11000){
+                const duplicatedKey = Object.keys(err.keyValue)[0];
+                const duplicatedValue = err.keyValue[duplicatedKey];
+                return res.status(409).send({message: "Paciente com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+            }
 
-        return res.status(500).send({
-            message: err.message || "Erro ao gravar Paciente"
+            return res.status(500).send({
+                message: err.message || "Erro ao gravar Paciente"
+            });
         });
-    });
 };
 
 exports.findAll = (req, res) => {
@@ -49,6 +50,7 @@ exports.findAll = (req, res) => {
                 pacientes,
                 page
             });
+
         }).catch(err => {
             return res.status(500).send({
                 message: err.message || "Erro ao buscar lista de Pacientes"
@@ -58,20 +60,22 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     Paciente.findById(req.params.pacienteId)
-    .then(paciente => {
-        if(paciente){
-            return res.send(paciente);
-        }
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        .then(paciente => {
+            if(paciente) return res.send(paciente);
+
             return res.status(404).send({
                 message: "Paciente não encontrado com id " + req.params.pacienteId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao buscar Paciente com id " + req.params.pacienteId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') return res.status(404).send({
+                message: "Paciente não encontrado com id " + req.params.pacienteId
+            });
+
+            return res.status(500).send({
+                message: "Erro ao buscar Paciente com id " + req.params.pacienteId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
@@ -83,57 +87,70 @@ exports.update = async (req, res) => {
     });
 
     Paciente.findByIdAndUpdate(req.params.pacienteId, req.body, {new: true})
-    .then(paciente => {
-        if(paciente) return res.send(paciente);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        .then(paciente => {
+            if(paciente) return res.send(paciente);
+
             return res.status(404).send({
                 message: "Paciente não encontrado com id " + req.params.pacienteId
-            });                
-        }
+            });
 
-        if(err.code === 11000){
-            const duplicatedKey = Object.keys(err.keyValue)[0];
-            const duplicatedValue = err.keyValue[duplicatedKey];
-            return res.status(409).send({message: "Paciente com " + duplicatedKey + " " + duplicatedValue + " já existente"});
-        }
+        }).catch(err => {
+            if(err.kind === 'ObjectId') return res.status(404).send({
+                message: "Paciente não encontrado com id " + req.params.pacienteId
+            });
 
-        return res.status(500).send({
-            message: "Erro ao atualizar Paciente com id " + req.params.pacienteId
+            if(err.code === 11000){
+                const duplicatedKey = Object.keys(err.keyValue)[0];
+                const duplicatedValue = err.keyValue[duplicatedKey];
+                return res.status(409).send({message: "Paciente com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+            }
+
+            return res.status(500).send({
+                message: "Erro ao atualizar Paciente com id " + req.params.pacienteId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
 exports.inactivate = (req, res) => {
     Paciente.findByIdAndUpdate(req.params.pacienteId, { ativo : false })
-    .then(paciente => {
-        if(paciente) return res.send({message: "Paciente inativado com sucesso"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        .then(paciente => {
+            if(paciente) return res.send({message: "Paciente inativado com sucesso"});
+
             return res.status(404).send({
                 message: "Paciente não encontrado com id " + req.params.pacienteId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao inativar Paciente com id " + req.params.pacienteId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Paciente não encontrado com id " + req.params.pacienteId
+                });
+            }
+            return res.status(500).send({
+                message: "Erro ao inativar Paciente com id " + req.params.pacienteId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
 exports.activate = (req, res) => {
     Paciente.findByIdAndUpdate(req.params.pacienteId, { ativo : true })
-    .then(paciente => {
-        if(paciente) return res.send({message: "Paciente ativado com sucesso"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        .then(paciente => {
+            if(paciente) return res.send({message: "Paciente ativado com sucesso"});
+
             return res.status(404).send({
                 message: "Paciente não encontrado com id " + req.params.pacienteId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao ativar Paciente com id " + req.params.pacienteId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Paciente não encontrado com id " + req.params.pacienteId
+                });                
+            }
+            return res.status(500).send({
+                message: "Erro ao ativar Paciente com id " + req.params.pacienteId
+            });
         });
-    });
 };

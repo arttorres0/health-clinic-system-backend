@@ -28,19 +28,20 @@ exports.create = async (req, res) => {
     const recepcionista = new Recepcionista(data);
 
     recepcionista.save()
-    .then(data => {
-        return res.send(data);
-    }).catch(err => {
-        if(err.code === 11000){
-            const duplicatedKey = Object.keys(err.keyValue)[0];
-            const duplicatedValue = err.keyValue[duplicatedKey];
-            return res.status(409).send({message: "Recepcionista com " + duplicatedKey + " " + duplicatedValue + " já existente"});
-        }
+        .then(data => {
+            return res.send(data);
+        
+        }).catch(err => {
+            if(err.code === 11000){
+                const duplicatedKey = Object.keys(err.keyValue)[0];
+                const duplicatedValue = err.keyValue[duplicatedKey];
+                return res.status(409).send({message: "Recepcionista com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+            }
 
-        return res.status(500).send({
-            message: err.message || "Erro ao gravar Recepcionista"
+            return res.status(500).send({
+                message: err.message || "Erro ao gravar Recepcionista"
+            });
         });
-    });
 };
 
 exports.findAll = (req, res) => {
@@ -65,6 +66,7 @@ exports.findAll = (req, res) => {
                 recepcionistas,
                 page
             });
+
         }).catch(err => {
             return res.status(500).send({
                 message: err.message || "Erro ao buscar lista de Recepcionistas"
@@ -74,23 +76,27 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     Recepcionista.findById(req.params.recepcionistaId)
-    .then(recepcionista => {
-        if(recepcionista){
-            //TODO: only returns this values if logged in user is ADMIN
-            recepcionista.login = undefined;
-            recepcionista.senha = undefined;
-            return res.send(recepcionista);
-        }
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        .then(recepcionista => {
+            if(recepcionista){
+                //TODO: only returns this values if logged in user is ADMIN
+                recepcionista.login = undefined;
+                recepcionista.senha = undefined;
+                return res.send(recepcionista);
+            }
+
             return res.status(404).send({
                 message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao buscar Recepcionista com id " + req.params.recepcionistaId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') return res.status(404).send({
+                message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+            });
+
+            return res.status(500).send({
+                message: "Erro ao buscar Recepcionista com id " + req.params.recepcionistaId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
@@ -101,77 +107,83 @@ exports.update = async (req, res) => {
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Recepcionista"
     });
 
-    if(await loginAlreadyExistsInOtherRole(req.body.login, req.params.recepcionistaId)) return res.status(400).send({
+    if(await loginAlreadyExistsInOtherRole(req.body.login)) return res.status(400).send({
         message: "Outro usuário do sistema já possui o login " + req.body.login
     });
 
     Recepcionista.findByIdAndUpdate(req.params.recepcionistaId, req.body, {new: true})
-    .then(recepcionista => {
-        if(recepcionista) return res.send(recepcionista);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
+        .then(recepcionista => {
+            if(recepcionista) return res.send(recepcionista);
+
             return res.status(404).send({
                 message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
-            });                
-        }
+            });
 
-        if(err.code === 11000){
-            const duplicatedKey = Object.keys(err.keyValue)[0];
-            const duplicatedValue = err.keyValue[duplicatedKey];
-            return res.status(409).send({message: "Recepcionista com " + duplicatedKey + " " + duplicatedValue + " já existente"});
-        }
+        }).catch(err => {
+            if(err.kind === 'ObjectId') return res.status(404).send({
+                message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+            });
 
-        return res.status(500).send({
-            message: "Erro ao atualizar Recepcionista com id " + req.params.recepcionistaId
+            if(err.code === 11000){
+                const duplicatedKey = Object.keys(err.keyValue)[0];
+                const duplicatedValue = err.keyValue[duplicatedKey];
+                return res.status(409).send({message: "Recepcionista com " + duplicatedKey + " " + duplicatedValue + " já existente"});
+            }
+
+            return res.status(500).send({
+                message: "Erro ao atualizar Recepcionista com id " + req.params.recepcionistaId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
 exports.inactivate = (req, res) => {
     Recepcionista.findByIdAndUpdate(req.params.recepcionistaId, { ativo : false })
-    .then(recepcionista => {
-        if(recepcionista) return res.send({message: "Recepcionista inativado com sucesso"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        .then(recepcionista => {
+            if(recepcionista) return res.send({message: "Recepcionista inativado com sucesso"});
+
             return res.status(404).send({
                 message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao inativar Recepcionista com id " + req.params.recepcionistaId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                });
+            }
+            return res.status(500).send({
+                message: "Erro ao inativar Recepcionista com id " + req.params.recepcionistaId
+            });
         });
-    });
 };
 
 //ONLY ADMIN
 exports.activate = (req, res) => {
     Recepcionista.findByIdAndUpdate(req.params.recepcionistaId, { ativo : true })
-    .then(recepcionista => {
-        if(recepcionista) return res.send({message: "Recepcionista ativado com sucesso"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        .then(recepcionista => {
+            if(recepcionista) return res.send({message: "Recepcionista ativado com sucesso"});
+
             return res.status(404).send({
                 message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
-            });                
-        }
-        return res.status(500).send({
-            message: "Erro ao ativar Recepcionista com id " + req.params.recepcionistaId
+            });
+
+        }).catch(err => {
+            if(err.kind === 'ObjectId') {
+                return res.status(404).send({
+                    message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                });                
+            }
+            return res.status(500).send({
+                message: "Erro ao ativar Recepcionista com id " + req.params.recepcionistaId
+            });
         });
-    });
 };
 
-async function loginAlreadyExistsInOtherRole(login, id=null){
+async function loginAlreadyExistsInOtherRole(login){
     if(login === "admin") return true;
 
-    if(id){
-        var result = await Medico.findOne({login, _id : {$ne : id}});
-        if(result) return true;
-        return false;
-
-    } else{
-        var result = await Medico.findOne({login : login});
-        if(result) return true;
-        return false;
-    }
+    var result = await Medico.findOne({login : login});
+    if(result) return true;
+    return false;
 }
