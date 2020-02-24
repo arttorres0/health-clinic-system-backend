@@ -1,5 +1,5 @@
 const Recepcionista = require('../models/Recepcionista');
-const Medico = require('../models/Medico');
+const {loginAlreadyExistsForAdminOrMedico} = require('./HelperFunctions');
 
 //ONLY ADMIN
 exports.create = async (req, res) => {
@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Recepcionista"
     });
 
-    if(await loginAlreadyExistsInOtherRole(data.login)) return res.status(400).send({
+    if(await loginAlreadyExistsForAdminOrMedico(data.login)) return res.status(400).send({
         message: "Outro usuário do sistema já possui o login " + data.login
     });
 
@@ -107,7 +107,7 @@ exports.update = async (req, res) => {
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Recepcionista"
     });
 
-    if(await loginAlreadyExistsInOtherRole(req.body.login)) return res.status(400).send({
+    if(await loginAlreadyExistsForAdminOrMedico(req.body.login)) return res.status(400).send({
         message: "Outro usuário do sistema já possui o login " + req.body.login
     });
 
@@ -179,11 +179,3 @@ exports.activate = (req, res) => {
             });
         });
 };
-
-async function loginAlreadyExistsInOtherRole(login){
-    if(login === "admin") return true;
-
-    var result = await Medico.findOne({login : login});
-    if(result) return true;
-    return false;
-}
