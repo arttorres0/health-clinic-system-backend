@@ -62,16 +62,16 @@ exports.findOne = (req, res) => {
             if(medicamento) return res.send(medicamento);
 
             return res.status(404).send({
-                message: "Medicamento não encontrado com id " + req.params.medicamentoId
+                message: "Medicamento não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') return res.status(404).send({
-                message: "Medicamento não encontrado com id " + req.params.medicamentoId
+                message: "Medicamento não encontrado"
             });
 
             return res.status(500).send({
-                message: "Erro ao buscar Medicamento com id " + req.params.medicamentoId
+                message: "Erro ao buscar Medicamento"
             });
         });
 };
@@ -89,12 +89,12 @@ exports.update = (req, res) => {
             if(medicamento) return res.send(medicamento);
 
             return res.status(404).send({
-                message: "Medicamento não encontrado com id " + req.params.medicamentoId
+                message: "Medicamento não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') return res.status(404).send({
-                message: "Medicamento não encontrado com id " + req.params.medicamentoId
+                message: "Medicamento não encontrado"
             });
 
             if(err.code === 11000){
@@ -104,7 +104,7 @@ exports.update = (req, res) => {
             }
 
             return res.status(500).send({
-                message: "Erro ao atualizar Medicamento com id " + req.params.medicamentoId
+                message: "Erro ao atualizar Medicamento"
             });
         });
 };
@@ -116,17 +116,17 @@ exports.inactivate = (req, res) => {
             if(medicamento) return res.send({message: "Medicamento inativado com sucesso"});
 
             return res.status(404).send({
-                message: "Medicamento não encontrado com id " + req.params.medicamentoId
+                message: "Medicamento não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 return res.status(404).send({
-                    message: "Medicamento não encontrado com id " + req.params.medicamentoId
+                    message: "Medicamento não encontrado"
                 });
             }
             return res.status(500).send({
-                message: "Erro ao inativar Medicamento com id " + req.params.medicamentoId
+                message: "Erro ao inativar Medicamento"
             });
         });
 };
@@ -138,17 +138,17 @@ exports.activate = (req, res) => {
             if(medicamento) return res.send({message: "Medicamento ativado com sucesso"});
 
             return res.status(404).send({
-                message: "Medicamento não encontrado com id " + req.params.medicamentoId
+                message: "Medicamento não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 return res.status(404).send({
-                    message: "Medicamento não encontrado com id " + req.params.medicamentoId
+                    message: "Medicamento não encontrado"
                 });                
             }
             return res.status(500).send({
-                message: "Erro ao ativar Medicamento com id " + req.params.medicamentoId
+                message: "Erro ao ativar Medicamento"
             });
         });
 };

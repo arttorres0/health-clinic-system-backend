@@ -85,16 +85,16 @@ exports.findOne = (req, res) => {
             }
 
             return res.status(404).send({
-                message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                message: "Recepcionista não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') return res.status(404).send({
-                message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                message: "Recepcionista não encontrado"
             });
 
             return res.status(500).send({
-                message: "Erro ao buscar Recepcionista com id " + req.params.recepcionistaId
+                message: "Erro ao buscar Recepcionista"
             });
         });
 };
@@ -116,12 +116,12 @@ exports.update = async (req, res) => {
             if(recepcionista) return res.send(recepcionista);
 
             return res.status(404).send({
-                message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                message: "Recepcionista não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') return res.status(404).send({
-                message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                message: "Recepcionista não encontrado"
             });
 
             if(err.code === 11000){
@@ -131,7 +131,7 @@ exports.update = async (req, res) => {
             }
 
             return res.status(500).send({
-                message: "Erro ao atualizar Recepcionista com id " + req.params.recepcionistaId
+                message: "Erro ao atualizar Recepcionista"
             });
         });
 };
@@ -143,17 +143,17 @@ exports.inactivate = (req, res) => {
             if(recepcionista) return res.send({message: "Recepcionista inativado com sucesso"});
 
             return res.status(404).send({
-                message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                message: "Recepcionista não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 return res.status(404).send({
-                    message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                    message: "Recepcionista não encontrado"
                 });
             }
             return res.status(500).send({
-                message: "Erro ao inativar Recepcionista com id " + req.params.recepcionistaId
+                message: "Erro ao inativar Recepcionista"
             });
         });
 };
@@ -165,17 +165,17 @@ exports.activate = (req, res) => {
             if(recepcionista) return res.send({message: "Recepcionista ativado com sucesso"});
 
             return res.status(404).send({
-                message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                message: "Recepcionista não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 return res.status(404).send({
-                    message: "Recepcionista não encontrado com id " + req.params.recepcionistaId
+                    message: "Recepcionista não encontrado"
                 });                
             }
             return res.status(500).send({
-                message: "Erro ao ativar Recepcionista com id " + req.params.recepcionistaId
+                message: "Erro ao ativar Recepcionista"
             });
         });
 };

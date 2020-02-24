@@ -86,16 +86,16 @@ exports.findOne = (req, res) => {
             }
 
             return res.status(404).send({
-                message: "Médico não encontrado com id " + req.params.medicoId
+                message: "Médico não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') return res.status(404).send({
-                message: "Médico não encontrado com id " + req.params.medicoId
+                message: "Médico não encontrado"
             });
 
             return res.status(500).send({
-                message: "Erro ao buscar Médico com id " + req.params.medicoId
+                message: "Erro ao buscar Médico"
             });
         });
 };
@@ -117,12 +117,12 @@ exports.update = async (req, res) => {
             if(medico) return res.send(medico);
 
             return res.status(404).send({
-                message: "Médico não encontrado com id " + req.params.medicoId
+                message: "Médico não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') return res.status(404).send({
-                message: "Médico não encontrado com id " + req.params.medicoId
+                message: "Médico não encontrado"
             });
 
             if(err.code === 11000){
@@ -132,7 +132,7 @@ exports.update = async (req, res) => {
             }
 
             return res.status(500).send({
-                message: "Erro ao atualizar Médico com id " + req.params.medicoId
+                message: "Erro ao atualizar Médico"
             });
         });
 };
@@ -144,17 +144,17 @@ exports.inactivate = (req, res) => {
             if(medico) return res.send({message: "Médico inativado com sucesso"});
 
             return res.status(404).send({
-                message: "Médico não encontrado com id " + req.params.medicoId
+                message: "Médico não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 return res.status(404).send({
-                    message: "Médico não encontrado com id " + req.params.medicoId
+                    message: "Médico não encontrado"
                 });
             }
             return res.status(500).send({
-                message: "Erro ao inativar Médico com id " + req.params.medicoId
+                message: "Erro ao inativar Médico"
             });
         });
 };
@@ -166,17 +166,17 @@ exports.activate = (req, res) => {
             if(medico) return res.send({message: "Médico ativado com sucesso"});
 
             return res.status(404).send({
-                message: "Médico não encontrado com id " + req.params.medicoId
+                message: "Médico não encontrado"
             });
 
         }).catch(err => {
             if(err.kind === 'ObjectId') {
                 return res.status(404).send({
-                    message: "Médico não encontrado com id " + req.params.medicoId
+                    message: "Médico não encontrado"
                 });                
             }
             return res.status(500).send({
-                message: "Erro ao ativar Médico com id " + req.params.medicoId
+                message: "Erro ao ativar Médico"
             });
         });
 };
