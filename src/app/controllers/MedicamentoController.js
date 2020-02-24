@@ -1,6 +1,5 @@
 const Medicamento = require('../models/Medicamento');
 
-//ONLY ADMIN
 exports.create = (req, res) => {
     const data = {
         nomeGenerico : req.body.nomeGenerico,
@@ -40,7 +39,7 @@ exports.findAll = (req, res) => {
     var limitPerPage = 10;
 
     Medicamento.find( { $or : [{ nomeGenerico : { $regex : filter } }, { nomeDeFabrica : { $regex : filter } }] } )
-        .sort({ nome : 1 })
+        .sort({ nomeGenerico : 1 })
         .skip((limitPerPage*page) - limitPerPage)
         .limit(limitPerPage)
         .then(medicamentos => {
@@ -76,7 +75,6 @@ exports.findOne = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.update = (req, res) => {
     var validationError = Medicamento.joiValidate(req.body);
 
@@ -109,7 +107,6 @@ exports.update = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.inactivate = (req, res) => {
     Medicamento.findByIdAndUpdate(req.params.medicamentoId, { ativo : false })
         .then(medicamento => {
@@ -131,7 +128,6 @@ exports.inactivate = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.activate = (req, res) => {
     Medicamento.findByIdAndUpdate(req.params.medicamentoId, { ativo : true })
         .then(medicamento => {

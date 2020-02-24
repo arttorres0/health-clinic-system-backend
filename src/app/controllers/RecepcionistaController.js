@@ -1,7 +1,6 @@
 const Recepcionista = require('../models/Recepcionista');
 const {loginAlreadyExistsForAdminOrMedico} = require('./HelperFunctions');
 
-//ONLY ADMIN
 exports.create = async (req, res) => {
     const data = {
         nome : req.body.nome,
@@ -99,7 +98,6 @@ exports.findOne = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.update = async (req, res) => {
     var validationError = Recepcionista.joiValidate(req.body);
 
@@ -136,7 +134,6 @@ exports.update = async (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.inactivate = (req, res) => {
     Recepcionista.findByIdAndUpdate(req.params.recepcionistaId, { ativo : false })
         .then(recepcionista => {
@@ -158,7 +155,6 @@ exports.inactivate = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.activate = (req, res) => {
     Recepcionista.findByIdAndUpdate(req.params.recepcionistaId, { ativo : true })
         .then(recepcionista => {

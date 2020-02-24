@@ -1,7 +1,6 @@
 const Medico = require('../models/Medico');
 const {loginAlreadyExistsForAdminOrRecepcionista} = require('./HelperFunctions');
 
-//ONLY ADMIN
 exports.create = async (req, res) => {
     const data = {
         nome : req.body.nome,
@@ -100,7 +99,6 @@ exports.findOne = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.update = async (req, res) => {
     var validationError = Medico.joiValidate(req.body);
 
@@ -137,7 +135,6 @@ exports.update = async (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.inactivate = (req, res) => {
     Medico.findByIdAndUpdate(req.params.medicoId, { ativo : false })
         .then(medico => {
@@ -159,7 +156,6 @@ exports.inactivate = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.activate = (req, res) => {
     Medico.findByIdAndUpdate(req.params.medicoId, { ativo : true })
         .then(medico => {

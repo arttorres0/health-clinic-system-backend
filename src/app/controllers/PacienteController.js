@@ -1,6 +1,5 @@
 const Paciente = require('../models/Paciente');
 
-//ONLY ADMIN
 exports.create = (req, res) => {
     const data = {
         nome : req.body.nome,
@@ -78,7 +77,6 @@ exports.findOne = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.update = (req, res) => {
     var validationError = Paciente.joiValidate(req.body);
 
@@ -111,7 +109,6 @@ exports.update = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.inactivate = (req, res) => {
     Paciente.findByIdAndUpdate(req.params.pacienteId, { ativo : false })
         .then(paciente => {
@@ -133,7 +130,6 @@ exports.inactivate = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.activate = (req, res) => {
     Paciente.findByIdAndUpdate(req.params.pacienteId, { ativo : true })
         .then(paciente => {

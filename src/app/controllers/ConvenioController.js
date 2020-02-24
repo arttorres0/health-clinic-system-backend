@@ -1,6 +1,5 @@
 const Convenio = require('../models/Convenio');
 
-//ONLY ADMIN
 exports.create = (req, res) => {
     const data = {
         nome : req.body.nome,
@@ -74,7 +73,6 @@ exports.findOne = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.update = (req, res) => {
     var validationError = Convenio.joiValidate(req.body);
 
@@ -107,7 +105,6 @@ exports.update = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.inactivate = (req, res) => {
     Convenio.findByIdAndUpdate(req.params.convenioId, { ativo : false })
         .then(convenio => {
@@ -129,7 +126,6 @@ exports.inactivate = (req, res) => {
         });
 };
 
-//ONLY ADMIN
 exports.activate = (req, res) => {
     Convenio.findByIdAndUpdate(req.params.convenioId, { ativo : true })
         .then(convenio => {
