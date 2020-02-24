@@ -1,7 +1,7 @@
 const Medicamento = require('../models/Medicamento');
 
 //ONLY ADMIN
-exports.create = async (req, res) => {
+exports.create = (req, res) => {
     const data = {
         nomeGenerico : req.body.nomeGenerico,
         nomeDeFabrica : req.body.nomeDeFabrica,
@@ -77,7 +77,7 @@ exports.findOne = (req, res) => {
 };
 
 //ONLY ADMIN
-exports.update = async (req, res) => {
+exports.update = (req, res) => {
     var validationError = Medicamento.joiValidate(req.body);
 
     if(validationError.error) return res.status(400).send({

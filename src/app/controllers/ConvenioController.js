@@ -1,7 +1,7 @@
 const Convenio = require('../models/Convenio');
 
 //ONLY ADMIN
-exports.create = async (req, res) => {
+exports.create = (req, res) => {
     const data = {
         nome : req.body.nome,
         ativo : true
@@ -75,7 +75,7 @@ exports.findOne = (req, res) => {
 };
 
 //ONLY ADMIN
-exports.update = async (req, res) => {
+exports.update = (req, res) => {
     var validationError = Convenio.joiValidate(req.body);
 
     if(validationError.error) return res.status(400).send({

@@ -1,7 +1,7 @@
 const Paciente = require('../models/Paciente');
 
 //ONLY ADMIN
-exports.create = async (req, res) => {
+exports.create = (req, res) => {
     const data = {
         nome : req.body.nome,
         cpf : req.body.cpf,
@@ -79,7 +79,7 @@ exports.findOne = (req, res) => {
 };
 
 //ONLY ADMIN
-exports.update = async (req, res) => {
+exports.update = (req, res) => {
     var validationError = Paciente.joiValidate(req.body);
 
     if(validationError.error) return res.status(400).send({
