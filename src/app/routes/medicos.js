@@ -8,8 +8,4 @@ module.exports = (routes) => {
     routes.get('/medicos/:medicoId', medicos.findOne);
 
     routes.put('/medicos/:medicoId', medicos.update);
-
-    routes.put('/medicos/inativar/:medicoId', medicos.inactivate);
-
-    routes.put('/medicos/ativar/:medicoId', medicos.activate);
 }

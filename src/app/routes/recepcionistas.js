@@ -8,8 +8,4 @@ module.exports = (routes) => {
     routes.get('/recepcionistas/:recepcionistaId', recepcionistas.findOne);
 
     routes.put('/recepcionistas/:recepcionistaId', recepcionistas.update);
-
-    routes.put('/recepcionistas/inativar/:recepcionistaId', recepcionistas.inactivate);
-
-    routes.put('/recepcionistas/ativar/:recepcionistaId', recepcionistas.activate);
 }

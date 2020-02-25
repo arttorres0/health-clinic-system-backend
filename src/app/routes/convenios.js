@@ -8,8 +8,4 @@ module.exports = (routes) => {
     routes.get('/convenios/:convenioId', convenios.findOne);
 
     routes.put('/convenios/:convenioId', convenios.update);
-
-    routes.put('/convenios/inativar/:convenioId', convenios.inactivate);
-
-    routes.put('/convenios/ativar/:convenioId', convenios.activate);
 }
