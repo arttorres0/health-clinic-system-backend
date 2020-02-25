@@ -67,11 +67,19 @@ exports.findAll = (req, res) => {
         .skip((limitPerPage*page) - limitPerPage)
         .limit(limitPerPage)
         .then(consultas => {
-            return res.send({
-                consultas,
-                page
-            });
+            Consulta.count( query ).exec((error, count) => {
+                if(error) return res.status(500).send({
+                    message: err.message || "Erro ao buscar lista de Consultas"
+                });
 
+                return res.send({
+                    consultas,
+                    page,
+                    numberOfPages : Math.ceil(count/limitPerPage),
+                    numberOfResults : count
+                });
+            })
+  
         }).catch(err => {
             return res.status(500).send({
                 message: err.message || "Erro ao buscar lista de Consultas"

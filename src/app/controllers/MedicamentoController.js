@@ -38,15 +38,25 @@ exports.findAll = (req, res) => {
     var page = req.body.page || 1;
     var limitPerPage = 10;
 
-    Medicamento.find( { $or : [{ nomeGenerico : { $regex : filter } }, { nomeDeFabrica : { $regex : filter } }] } )
+    var query = { $or : [{ nomeGenerico : { $regex : filter } }, { nomeDeFabrica : { $regex : filter } }] };
+
+    Medicamento.find( query )
         .sort({ date : 1, hour : 1 })
         .skip((limitPerPage*page) - limitPerPage)
         .limit(limitPerPage)
         .then(medicamentos => {
-            return res.send({
-                medicamentos,
-                page
-            });
+            Medicamento.count( query ).exec((error, count) => {
+                if(error) return res.status(500).send({
+                    message: err.message || "Erro ao buscar lista de Medicamentos"
+                });
+
+                return res.send({
+                    medicamentos,
+                    page,
+                    numberOfPages : Math.ceil(count/limitPerPage),
+                    numberOfResults : count
+                });
+            })
 
         }).catch(err => {
             return res.status(500).send({

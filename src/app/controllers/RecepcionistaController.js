@@ -48,7 +48,9 @@ exports.findAll = (req, res) => {
     var page = req.body.page || 1;
     var limitPerPage = 10;
 
-    Recepcionista.find({ nome : { $regex : filter } })
+    var query = { nome : { $regex : filter } };
+
+    Recepcionista.find( query )
         .sort({ nome : 1 })
         .skip((limitPerPage*page) - limitPerPage)
         .limit(limitPerPage)
@@ -61,10 +63,18 @@ exports.findAll = (req, res) => {
                 return recepcionista;
             });
 
-            return res.send({
-                recepcionistas,
-                page
-            });
+            Recepcionista.count( query ).exec((error, count) => {
+                if(error) return res.status(500).send({
+                    message: err.message || "Erro ao buscar lista de Recepcionistas"
+                });
+
+                return res.send({
+                    recepcionistas,
+                    page,
+                    numberOfPages : Math.ceil(count/limitPerPage),
+                    numberOfResults : count
+                });
+            })
 
         }).catch(err => {
             return res.status(500).send({

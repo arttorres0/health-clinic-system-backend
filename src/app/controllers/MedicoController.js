@@ -49,7 +49,9 @@ exports.findAll = (req, res) => {
     var page = req.body.page || 1;
     var limitPerPage = 10;
 
-    Medico.find({ nome : { $regex : filter } })
+    var query = { nome : { $regex : filter } };
+
+    Medico.find( query )
         .sort({ nome : 1 })
         .skip((limitPerPage*page) - limitPerPage)
         .limit(limitPerPage)
@@ -62,10 +64,18 @@ exports.findAll = (req, res) => {
                 return medico;
             });
 
-            return res.send({
-                medicos,
-                page
-            });
+            Medico.count( query ).exec((error, count) => {
+                if(error) return res.status(500).send({
+                    message: err.message || "Erro ao buscar lista de Médicos"
+                });
+
+                return res.send({
+                    medicos,
+                    page,
+                    numberOfPages : Math.ceil(count/limitPerPage),
+                    numberOfResults : count
+                });
+            })
 
         }).catch(err => {
             return res.status(500).send({

@@ -36,15 +36,25 @@ exports.findAll = (req, res) => {
     var page = req.body.page || 1;
     var limitPerPage = 10;
 
-    Convenio.find({ nome : { $regex : filter } })
+    var query = { nome : { $regex : filter } };
+
+    Convenio.find( query )
         .sort({ nome : 1 })
         .skip((limitPerPage*page) - limitPerPage)
         .limit(limitPerPage)
         .then(convenios => {
-            return res.send({
-                convenios,
-                page
-            });
+            Convenio.count( query ).exec((error, count) => {
+                if(error) return res.status(500).send({
+                    message: err.message || "Erro ao buscar lista de Convênios"
+                });
+
+                return res.send({
+                    convenios,
+                    page,
+                    numberOfPages : Math.ceil(count/limitPerPage),
+                    numberOfResults : count
+                });
+            })
 
         }).catch(err => {
             return res.status(500).send({
