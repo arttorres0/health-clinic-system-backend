@@ -39,7 +39,7 @@ exports.findAll = (req, res) => {
     var limitPerPage = 10;
 
     Medicamento.find( { $or : [{ nomeGenerico : { $regex : filter } }, { nomeDeFabrica : { $regex : filter } }] } )
-        .sort({ nomeGenerico : 1 })
+        .sort({ date : 1, hour : 1 })
         .skip((limitPerPage*page) - limitPerPage)
         .limit(limitPerPage)
         .then(medicamentos => {

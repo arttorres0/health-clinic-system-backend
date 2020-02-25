@@ -1,18 +1,123 @@
 const Recepcionista = require('../models/Recepcionista');
 const Medico = require('../models/Medico');
+const Paciente = require('../models/Paciente');
+const Convenio = require('../models/Convenio');
+const Consulta = require('../models/Consulta');
 
 exports.loginAlreadyExistsForAdminOrRecepcionista = async (login) => {
-    if(login === "admin") return true;
+    try {
+        if(login === "admin") return true;
 
-    var result = await Recepcionista.findOne({login : login});
-    if(result) return true;
-    return false;
+        var result = await Recepcionista.findOne({login : login});
+        if(result) return true;
+        return false;
+            
+    } catch (error) {
+        console.log(error);
+        return true;
+    }
 };
 
 exports.loginAlreadyExistsForAdminOrMedico = async (login) => {
-    if(login === "admin") return true;
+    try {
+        if(login === "admin") return true;
 
-    var result = await Medico.findOne({login : login});
-    if(result) return true;
-    return false;
+        var result = await Medico.findOne({login : login});
+        if(result) return true;
+        return false;
+            
+    } catch (error) {
+        console.log(error);
+        return true;
+    }
 };
+
+exports.idPacienteisValid = async (idPaciente) => {
+    try {
+        var foundPaciente = await Paciente.find({_id : idPaciente, ativo : true});
+        if(foundPaciente) return true;
+        return false;
+            
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+exports.idMedicoisValid = async (idMedico) => {
+    try {
+        var foundMedico = await Medico.findOne({_id : idMedico, ativo : true});
+        if(foundMedico) return true;
+        return false;
+            
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+exports.idConvenioisValid = async (idConvenio) => {
+    try {
+        var foundConvenio = await Convenio.findOne({_id : idConvenio, ativo : true});
+        if(foundConvenio) return true;
+        return false;
+            
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+exports.medicoHasConsultaAtSameTime = async (idMedico, date, hour, idConsulta=null) => {
+    try {
+        if(idConsulta){
+            var foundConsultaMedico = await Consulta.findOne({
+                idMedico,
+                date,
+                hour,
+                _id : { $ne : idConsulta }
+            });
+    
+        } else {
+            var foundConsultaMedico = await Consulta.findOne({
+                idMedico,
+                date,
+                hour
+            });
+        }
+        
+        if(foundConsultaMedico) return true;
+        return false;
+            
+    } catch (error) {
+        console.log(error);
+        return true;
+    }
+}
+
+exports.pacienteHasConsultaAtSameTime = async (idPaciente, date, hour, idConsulta=null) => {
+    try {
+        if(idConsulta){
+            var foundConsultaPaciente = await Consulta.findOne({
+                idPaciente,
+                date,
+                hour,
+                _id : { $ne : idConsulta }
+            });
+    
+        } else {
+            var foundConsultaPaciente = await Consulta.findOne({
+                idPaciente,
+                date,
+                hour
+            });
+        }
+        
+        if(foundConsultaPaciente) return true;
+        return false;
+            
+    } catch (error) {
+        console.log(error);
+        return true;
+    }
+}

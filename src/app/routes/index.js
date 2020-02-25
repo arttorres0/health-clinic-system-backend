@@ -6,5 +6,6 @@ require('./recepcionistas')(routes);
 require('./pacientes')(routes);
 require('./convenios')(routes);
 require('./medicamentos')(routes);
+require('./consultas')(routes);
 
 module.exports = routes;
