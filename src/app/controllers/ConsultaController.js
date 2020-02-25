@@ -136,7 +136,7 @@ exports.update = async (req, res) => {
 
         }).catch(err => {
             if(err.kind === 'ObjectId') return res.status(404).send({
-                message: "Consulta não encontrada"
+                message: "Consulta não encontrada ou com status Confirmada"
             });
 
             return res.status(500).send({
