@@ -1,5 +1,5 @@
 const Consulta = require('../models/Consulta');
-const {idPacienteisValid, idMedicoisValid, idConvenioisValid, medicoHasConsultaAtSameTime, pacienteHasConsultaAtSameTime} = require('./HelperFunctions');
+const {idPacienteIsValid, idMedicoIsValid, idConvenioIsValid, medicoHasConsultaAtSameTime, pacienteHasConsultaAtSameTime} = require('./HelperFunctions');
 
 exports.create = async (req, res) => {
     const data = {
@@ -19,15 +19,15 @@ exports.create = async (req, res) => {
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados da Consulta"
     });
 
-    if(!await idMedicoisValid(data.idMedico)) return res.status(400).send({
+    if(!await idMedicoIsValid(data.idMedico)) return res.status(400).send({
         message: "Médico não encontrado ou inativo"
     });
 
-    if(!await idPacienteisValid(data.idPaciente)) return res.status(400).send({
+    if(!await idPacienteIsValid(data.idPaciente)) return res.status(400).send({
         message: "Paciente não encontrado ou inativo"
     });
 
-    if(data.tipo === "CONVENIO" && !await idConvenioisValid(data.idConvenio)) return res.status(400).send({
+    if(data.tipo === "CONVENIO" && !await idConvenioIsValid(data.idConvenio)) return res.status(400).send({
         message: "Convênio não encontrado ou inativo"
     });
 
@@ -114,15 +114,15 @@ exports.update = async (req, res) => {
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Consulta"
     });
 
-    if(!await idMedicoisValid(req.body.idMedico)) return res.status(400).send({
+    if(!await idMedicoIsValid(req.body.idMedico)) return res.status(400).send({
         message: "Médico não encontrado ou inativo"
     });
 
-    if(!await idPacienteisValid(req.body.idPaciente)) return res.status(400).send({
+    if(!await idPacienteIsValid(req.body.idPaciente)) return res.status(400).send({
         message: "Paciente não encontrado ou inativo"
     });
 
-    if(req.body.tipo === "CONVENIO" && !await idConvenioisValid(req.body.idConvenio)) return res.status(400).send({
+    if(req.body.tipo === "CONVENIO" && !await idConvenioIsValid(req.body.idConvenio)) return res.status(400).send({
         message: "Convênio não encontrado ou inativo"
     });
 

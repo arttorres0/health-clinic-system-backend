@@ -32,7 +32,7 @@ exports.loginAlreadyExistsForAdminOrMedico = async (login) => {
     }
 };
 
-exports.idPacienteisValid = async (idPaciente) => {
+exports.idPacienteIsValid = async (idPaciente) => {
     try {
         var foundPaciente = await Paciente.find({_id : idPaciente, ativo : true});
         if(foundPaciente) return true;
@@ -44,7 +44,7 @@ exports.idPacienteisValid = async (idPaciente) => {
     }
 }
 
-exports.idMedicoisValid = async (idMedico) => {
+exports.idMedicoIsValid = async (idMedico) => {
     try {
         var foundMedico = await Medico.findOne({_id : idMedico, ativo : true});
         if(foundMedico) return true;
@@ -56,7 +56,7 @@ exports.idMedicoisValid = async (idMedico) => {
     }
 }
 
-exports.idConvenioisValid = async (idConvenio) => {
+exports.idConvenioIsValid = async (idConvenio) => {
     try {
         var foundConvenio = await Convenio.findOne({_id : idConvenio, ativo : true});
         if(foundConvenio) return true;
