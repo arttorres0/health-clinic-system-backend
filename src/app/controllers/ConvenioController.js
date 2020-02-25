@@ -1,22 +1,22 @@
 const Convenio = require('../models/Convenio');
 
 exports.create = (req, res) => {
-    const data = {
+    const convenioReqInfo = {
         nome : req.body.nome,
         ativo : true
     }
 
-    var validationError = Convenio.joiValidate(data);
+    var validationError = Convenio.joiValidate(convenioReqInfo);
 
     if(validationError.error) return res.status(400).send({
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Convênio"
     });
 
-    const convenio = new Convenio(data);
+    const convenio = new Convenio(convenioReqInfo);
 
     convenio.save()
-        .then(data => {
-            return res.send(data);
+        .then(convenio => {
+            return res.send(convenio);
         
         }).catch(err => {
             if(err.code === 11000){

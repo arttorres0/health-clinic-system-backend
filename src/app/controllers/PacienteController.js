@@ -1,7 +1,7 @@
 const Paciente = require('../models/Paciente');
 
 exports.create = (req, res) => {
-    const data = {
+    const pacienteReqInfo = {
         nome : req.body.nome,
         cpf : req.body.cpf,
         email : req.body.email,
@@ -10,17 +10,17 @@ exports.create = (req, res) => {
         ativo : true
     }
 
-    var validationError = Paciente.joiValidate(data);
+    var validationError = Paciente.joiValidate(pacienteReqInfo);
 
     if(validationError.error) return res.status(400).send({
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Paciente"
     });
 
-    const paciente = new Paciente(data);
+    const paciente = new Paciente(pacienteReqInfo);
 
     paciente.save()
-        .then(data => {
-            return res.send(data);
+        .then(paciente => {
+            return res.send(paciente);
         
         }).catch(err => {
             if(err.code === 11000){

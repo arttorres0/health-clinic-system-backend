@@ -2,48 +2,48 @@ const Consulta = require('../models/Consulta');
 const {idPacienteIsValid, idMedicoIsValid, idConvenioIsValid, medicoHasConsultaAtSameTime, pacienteHasConsultaAtSameTime} = require('./HelperFunctions');
 
 exports.create = async (req, res) => {
-    const data = {
+    const consultaReqInfo = {
         idPaciente : req.body.idPaciente,
         idMedico : req.body.idMedico,
-        date : req.body.date,
-        hour : req.body.hour,
+        data : req.body.data,
+        hora : req.body.hora,
         status : "AGENDADA",
         tipo : req.body.tipo
     }
 
-    if(data.tipo === "CONVENIO") data.idConvenio = req.body.idConvenio;
+    if(consultaReqInfo.tipo === "CONVENIO") consultaReqInfo.idConvenio = req.body.idConvenio;
 
-    var validationError = Consulta.joiValidate(data);
+    var validationError = Consulta.joiValidate(consultaReqInfo);
 
     if(validationError.error) return res.status(400).send({
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados da Consulta"
     });
 
-    if(!await idMedicoIsValid(data.idMedico)) return res.status(400).send({
+    if(!await idMedicoIsValid(consultaReqInfo.idMedico)) return res.status(400).send({
         message: "Médico não encontrado ou inativo"
     });
 
-    if(!await idPacienteIsValid(data.idPaciente)) return res.status(400).send({
+    if(!await idPacienteIsValid(consultaReqInfo.idPaciente)) return res.status(400).send({
         message: "Paciente não encontrado ou inativo"
     });
 
-    if(data.tipo === "CONVENIO" && !await idConvenioIsValid(data.idConvenio)) return res.status(400).send({
+    if(consultaReqInfo.tipo === "CONVENIO" && !await idConvenioIsValid(consultaReqInfo.idConvenio)) return res.status(400).send({
         message: "Convênio não encontrado ou inativo"
     });
 
-    if(await medicoHasConsultaAtSameTime(data.idMedico, data.date, data.hour)) return res.status(400).send({
+    if(await medicoHasConsultaAtSameTime(consultaReqInfo.idMedico, consultaReqInfo.data, consultaReqInfo.hora)) return res.status(400).send({
         message: "Médico já possui consulta agendada para data e hora informadas"
     });
 
-    if(await pacienteHasConsultaAtSameTime(data.idPaciente, data.date, data.hour)) return res.status(400).send({
+    if(await pacienteHasConsultaAtSameTime(consultaReqInfo.idPaciente, consultaReqInfo.data, consultaReqInfo.hora)) return res.status(400).send({
         message: "Paciente já possui consulta agendada para data e hora informadas"
     });
 
-    const consulta = new Consulta(data);
+    const consulta = new Consulta(consultaReqInfo);
 
     consulta.save()
-        .then(data => {
-            return res.send(data);
+        .then(consulta => {
+            return res.send(consulta);
         
         }).catch(err => {
             return res.status(500).send({
@@ -60,7 +60,7 @@ exports.findAll = (req, res) => {
 
     req.body.idPaciente ? query.idPaciente = req.body.idPaciente : undefined;
     req.body.idMedico ? query.idMedico = req.body.idMedico : undefined;
-    req.body.date ? query.date = req.body.date : undefined;
+    req.body.data ? query.data = req.body.data : undefined;
 
     Consulta.find( query )
         .sort({ nome : 1 })
@@ -126,11 +126,11 @@ exports.update = async (req, res) => {
         message: "Convênio não encontrado ou inativo"
     });
 
-    if(await medicoHasConsultaAtSameTime(req.body.idMedico, req.body.date, req.body.hour, req.params.consultaId)) return res.status(400).send({
+    if(await medicoHasConsultaAtSameTime(req.body.idMedico, req.body.data, req.body.hora, req.params.consultaId)) return res.status(400).send({
         message: "Médico já possui consulta agendada para data e hora informadas"
     });
 
-    if(await pacienteHasConsultaAtSameTime(req.body.idPaciente, req.body.date, req.body.hour, req.params.consultaId)) return res.status(400).send({
+    if(await pacienteHasConsultaAtSameTime(req.body.idPaciente, req.body.data, req.body.hora, req.params.consultaId)) return res.status(400).send({
         message: "Paciente já possui consulta agendada para data e hora informadas"
     });
 

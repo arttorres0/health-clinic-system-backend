@@ -1,24 +1,24 @@
 const Medicamento = require('../models/Medicamento');
 
 exports.create = (req, res) => {
-    const data = {
+    const medicamentoReqInfo = {
         nomeGenerico : req.body.nomeGenerico,
         nomeDeFabrica : req.body.nomeDeFabrica,
         fabricante : req.body.fabricante,
         ativo : true
     }
 
-    var validationError = Medicamento.joiValidate(data);
+    var validationError = Medicamento.joiValidate(medicamentoReqInfo);
 
     if(validationError.error) return res.status(400).send({
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Medicamento"
     });
 
-    const medicamento = new Medicamento(data);
+    const medicamento = new Medicamento(medicamentoReqInfo);
 
     medicamento.save()
-        .then(data => {
-            return res.send(data);
+        .then(medicamento => {
+            return res.send(medicamento);
         
         }).catch(err => {
             if(err.code === 11000){

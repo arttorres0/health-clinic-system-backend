@@ -5,7 +5,7 @@ const ReceitaDeMedicamentoSchema = mongoose.Schema(
     {
         idPaciente : mongoose.Types.ObjectId,
         idMedico : mongoose.Types.ObjectId,
-        date : Date,
+        data : Date,
         idMedicamento : mongoose.Types.ObjectId,
         observacao : String
     },
@@ -19,7 +19,7 @@ ReceitaDeMedicamentoSchema.statics.joiValidate = (obj) => {
         {
             idPaciente : Joi.string().alphanum().length(24).required(),
             idMedico : Joi.string().alphanum().length(24).required(),
-            date : Joi.date().required(),
+            data : Joi.date().required(),
             idMedicamento : Joi.string().alphanum().length(24).required(),
             observacao: Joi.string()
     	}).validate(obj);

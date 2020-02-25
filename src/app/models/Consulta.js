@@ -5,8 +5,8 @@ const ConsultaSchema = mongoose.Schema(
     {
         idPaciente : mongoose.Types.ObjectId,
         idMedico : mongoose.Types.ObjectId,
-        date : Date,
-        hour : Number,
+        data : Date,
+        hora : Number,
         status : String,
         tipo : String,
         idConvenio : mongoose.Types.ObjectId
@@ -21,8 +21,8 @@ ConsultaSchema.statics.joiValidate = (obj) => {
         {
             idPaciente : Joi.string().alphanum().length(24).required(),
             idMedico : Joi.string().alphanum().length(24).required(),
-            date : Joi.date().required(),
-            hour : Joi.number().integer().min(8).max(18).required(),
+            data : Joi.date().required(),
+            hora : Joi.number().integer().min(8).max(18).required(),
             status : Joi.string().valid("AGENDADA", "CONFIRMADA").required(),
             tipo : Joi.string().valid("PARTICULAR", "CONVENIO", "RETORNO").required(),
             idConvenio : Joi.when('tipo', {

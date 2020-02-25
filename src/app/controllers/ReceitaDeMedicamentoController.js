@@ -2,38 +2,38 @@ const ReceitaDeMedicamento = require('../models/ReceitaDeMedicamento');
 const {idPacienteIsValid, idMedicoIsValid, idMedicamentoIsValid} = require('./HelperFunctions');
 
 exports.create = async (req, res) => {
-    const data = {
+    const receitaDeMedicamentoReqInfo = {
         idPaciente : req.body.idPaciente,
         idMedico : req.body.idMedico,
-        date : req.body.date,
+        data : req.body.data,
         idMedicamento : req.body.idMedicamento,
     }
 
-    if(req.body.observacao) data.observacao = req.body.observacao;
+    if(req.body.observacao) receitaDeMedicamentoReqInfo.observacao = req.body.observacao;
 
-    var validationError = ReceitaDeMedicamento.joiValidate(data);
+    var validationError = ReceitaDeMedicamento.joiValidate(receitaDeMedicamentoReqInfo);
 
     if(validationError.error) return res.status(400).send({
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados da Receita de Medicamento"
     });
 
-    if(!await idMedicoIsValid(data.idMedico)) return res.status(400).send({
+    if(!await idMedicoIsValid(receitaDeMedicamentoReqInfo.idMedico)) return res.status(400).send({
         message: "Médico não encontrado ou inativo"
     });
 
-    if(!await idPacienteIsValid(data.idPaciente)) return res.status(400).send({
+    if(!await idPacienteIsValid(receitaDeMedicamentoReqInfo.idPaciente)) return res.status(400).send({
         message: "Paciente não encontrado ou inativo"
     });
 
-    if(!await idMedicamentoIsValid(data.idMedicamento)) return res.status(400).send({
+    if(!await idMedicamentoIsValid(receitaDeMedicamentoReqInfo.idMedicamento)) return res.status(400).send({
         message: "Medicamento não encontrado ou inativo"
     });
 
-    const receitaDeMedicamento = new ReceitaDeMedicamento(data);
+    const receitaDeMedicamento = new ReceitaDeMedicamento(receitaDeMedicamentoReqInfo);
 
     receitaDeMedicamento.save()
-        .then(data => {
-            return res.send(data);
+        .then(receitaDeMedicamento => {
+            return res.send(receitaDeMedicamento);
         
         }).catch(err => {
             return res.status(500).send({
@@ -51,7 +51,7 @@ exports.findAll = (req, res) => {
     req.body.idPaciente ? query.idPaciente = req.body.idPaciente : undefined;
     req.body.idMedico ? query.idMedico = req.body.idMedico : undefined;
     req.body.idMedicamento ? query.idMedicamento = req.body.idMedicamento : undefined;
-    req.body.date ? query.date = req.body.date : undefined;
+    req.body.data ? query.data = req.body.data : undefined;
 
     ReceitaDeMedicamento.find( query )
         .sort({ nome : 1 })

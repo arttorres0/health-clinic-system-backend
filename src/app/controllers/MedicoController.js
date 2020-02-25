@@ -2,7 +2,7 @@ const Medico = require('../models/Medico');
 const {loginAlreadyExistsForAdminOrRecepcionista} = require('./HelperFunctions');
 
 exports.create = async (req, res) => {
-    const data = {
+    const medicoReqInfo = {
         nome : req.body.nome,
         login : req.body.login,
         senha : req.body.senha,
@@ -15,21 +15,21 @@ exports.create = async (req, res) => {
         ativo : true
     }
 
-    var validationError = Medico.joiValidate(data);
+    var validationError = Medico.joiValidate(medicoReqInfo);
 
     if(validationError.error) return res.status(400).send({
         message: validationError.error.details[0].message ? "Formato inválido do campo " + validationError.error.details[0].context.key : "Erro nos dados do Médico"
     });
 
-    if(await loginAlreadyExistsForAdminOrRecepcionista(data.login)) return res.status(400).send({
-        message: "Outro usuário do sistema já possui o login " + data.login
+    if(await loginAlreadyExistsForAdminOrRecepcionista(medicoReqInfo.login)) return res.status(400).send({
+        message: "Outro usuário do sistema já possui o login " + medicoReqInfo.login
     });
 
-    const medico = new Medico(data);
+    const medico = new Medico(medicoReqInfo);
 
     medico.save()
-        .then(data => {
-            return res.send(data);
+        .then(medico => {
+            return res.send(medico);
         
         }).catch(err => {
             if(err.code === 11000){
