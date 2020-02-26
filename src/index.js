@@ -1,18 +1,16 @@
 const express = require('express');
 const app = express();
-const db = require('./database/config');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const routes = require('./app/routes/index');
 const fileUpload = require('express-fileupload');
-
-const port = 3000;
+const {port, dbUri} = require('./config.json');
 
 app.listen(port, () =>{
     console.log("Server running on port: " + port);
 });
 
-mongoose.connect(db.uri, { useNewUrlParser: true }, (err) => {
+mongoose.connect(dbUri, { useNewUrlParser: true }, (err) => {
     if(err){
         console.log("Error connecting to mongo");
     } else{
