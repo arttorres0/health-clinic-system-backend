@@ -4,6 +4,7 @@ const db = require('./database/config');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const routes = require('./app/routes/index');
+const fileUpload = require('express-fileupload');
 
 const port = 3000;
 
@@ -18,6 +19,10 @@ mongoose.connect(db.uri, { useNewUrlParser: true }, (err) => {
         console.log("Connected to mongo");
     }
 });
+
+app.use(fileUpload({
+    createParentPath : true
+}));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
