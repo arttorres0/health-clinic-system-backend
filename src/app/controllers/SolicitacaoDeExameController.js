@@ -149,7 +149,6 @@ exports.getExamResult = (req, res) => {
     SolicitacaoDeExame.findById(req.params.solicitacaoDeExameId)
         .then(solicitacaoDeExame => {
             if(solicitacaoDeExame && solicitacaoDeExame.nomeArquivoResultado) return res.sendFile(path.join(__dirname, '../../files/resultadosDeExames', solicitacaoDeExame.nomeArquivoResultado));
-            // if(solicitacaoDeExame) return res.sendFile(path.join(__dirname, '../../files', 'Orientações TCC Web.pdf'));
 
             return res.status(404).send({
                 message: "Solicitação de Exame não encontrada"
