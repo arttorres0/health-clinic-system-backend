@@ -7,7 +7,8 @@ const Consulta = require('../models/Consulta');
 
 exports.loginAlreadyExistsForAdminOrRecepcionista = async (login) => {
     try {
-        if(login === "admin") return true;
+        var adminLogin = require('../auth/AdminCredentials.json').adminLogin;
+        if(login === adminLogin) return true;
 
         var result = await Recepcionista.findOne({login : login});
         if(result) return true;
@@ -21,12 +22,28 @@ exports.loginAlreadyExistsForAdminOrRecepcionista = async (login) => {
 
 exports.loginAlreadyExistsForAdminOrMedico = async (login) => {
     try {
-        if(login === "admin") return true;
+        var adminLogin = require('../auth/AdminCredentials.json').adminLogin;
+        if(login === adminLogin) return true;
 
         var result = await Medico.findOne({login : login});
         if(result) return true;
         return false;
             
+    } catch (error) {
+        console.log(error);
+        return true;
+    }
+};
+
+exports.loginAlreadyExistsForMedicoOrRecepcionista = async (login) => {
+    try {
+        var result = await Medico.findOne({login : login});
+        if(result) return true;
+
+        var result = await Recepcionista.findOne({login : login});
+        if(result) return true;
+        return false;
+
     } catch (error) {
         console.log(error);
         return true;

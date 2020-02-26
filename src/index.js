@@ -5,9 +5,11 @@ const bodyParser = require('body-parser');
 const routes = require('./app/routes/index');
 const fileUpload = require('express-fileupload');
 const {port, dbUri} = require('./config.json');
+const {createAdminCredentialsFile} = require('./app/auth/createAdminCredentialsFile');
 
 app.listen(port, () =>{
     console.log("Server running on port: " + port);
+    createAdminCredentialsFile();
 });
 
 mongoose.connect(dbUri, { useNewUrlParser: true }, (err) => {
