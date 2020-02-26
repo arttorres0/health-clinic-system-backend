@@ -9,5 +9,6 @@ require('./medicamentos')(routes);
 require('./consultas')(routes);
 require('./receitasDeMedicamento')(routes);
 require('./solicitacoesDeExame')(routes);
+require('./auth')(routes);
 
 module.exports = routes;

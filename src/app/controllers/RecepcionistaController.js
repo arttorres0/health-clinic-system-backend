@@ -2,6 +2,7 @@ const Recepcionista = require('../models/Recepcionista');
 const {loginAlreadyExistsForAdminOrMedico} = require('./HelperFunctions');
 
 exports.create = async (req, res) => {
+    //TODO: encrypt password
     const recepcionistaReqInfo = {
         nome : req.body.nome,
         login : req.body.login,
@@ -109,6 +110,7 @@ exports.findOne = (req, res) => {
 };
 
 exports.update = async (req, res) => {
+    //TODO: encrypt password
     var validationError = Recepcionista.joiValidate(req.body);
 
     if(validationError.error) return res.status(400).send({

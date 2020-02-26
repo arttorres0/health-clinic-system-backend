@@ -2,6 +2,7 @@ const Medico = require('../models/Medico');
 const {loginAlreadyExistsForAdminOrRecepcionista} = require('./HelperFunctions');
 
 exports.create = async (req, res) => {
+    //TODO: encrypt password
     const medicoReqInfo = {
         nome : req.body.nome,
         login : req.body.login,
