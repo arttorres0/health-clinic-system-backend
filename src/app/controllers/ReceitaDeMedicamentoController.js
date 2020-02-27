@@ -1,5 +1,5 @@
 const ReceitaDeMedicamento = require('../models/ReceitaDeMedicamento');
-const {idPacienteIsValid, idMedicoIsValid, idMedicamentoIsValid} = require('./HelperFunctions');
+const {idPacienteIsValid, idMedicoIsValid, idMedicamentoIsValid} = require('../helper/HelperFunctions');
 
 exports.create = async (req, res) => {
     const receitaDeMedicamentoReqInfo = {

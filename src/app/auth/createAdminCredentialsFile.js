@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const {loginAlreadyExistsForMedicoOrRecepcionista} = require('../controllers/HelperFunctions');
+const {loginAlreadyExistsForMedicoOrRecepcionista} = require('../helper/HelperFunctions');
 
 exports.createAdminCredentialsFile = () => {
     console.log("Creating Admin credentials file");

@@ -1,5 +1,5 @@
 const SolicitacaoDeExame = require('../models/SolicitacaoDeExame');
-const {idPacienteIsValid, idMedicoIsValid} = require('./HelperFunctions');
+const {idPacienteIsValid, idMedicoIsValid} = require('../helper/HelperFunctions');
 const examTypeList = require('../models/ListaDeExames');
 const path = require('path');
 

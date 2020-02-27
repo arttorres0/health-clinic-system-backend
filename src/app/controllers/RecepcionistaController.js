@@ -1,5 +1,5 @@
 const Recepcionista = require('../models/Recepcionista');
-const {loginAlreadyExistsForAdminOrMedico} = require('./HelperFunctions');
+const {loginAlreadyExistsForAdminOrMedico} = require('../helper/HelperFunctions');
 
 exports.create = async (req, res) => {
     //TODO: encrypt password

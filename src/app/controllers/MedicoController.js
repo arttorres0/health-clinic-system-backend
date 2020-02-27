@@ -1,5 +1,5 @@
 const Medico = require('../models/Medico');
-const {loginAlreadyExistsForAdminOrRecepcionista} = require('./HelperFunctions');
+const {loginAlreadyExistsForAdminOrRecepcionista} = require('../helper/HelperFunctions');
 
 exports.create = async (req, res) => {
     //TODO: encrypt password

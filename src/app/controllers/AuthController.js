@@ -3,7 +3,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const Roles = require('../auth/Roles');
 const { jwtKey } = require('../../config.json');
-const {loginAlreadyExistsForMedicoOrRecepcionista} = require('./HelperFunctions');
+const {loginAlreadyExistsForMedicoOrRecepcionista} = require('../helper/HelperFunctions');
 const Recepcionista = require('../models/Recepcionista');
 const Medico = require('../models/Medico');
 

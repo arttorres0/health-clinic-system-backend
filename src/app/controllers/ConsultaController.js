@@ -1,5 +1,5 @@
 const Consulta = require('../models/Consulta');
-const {idPacienteIsValid, idMedicoIsValid, idConvenioIsValid, medicoHasConsultaAtSameTime, pacienteHasConsultaAtSameTime} = require('./HelperFunctions');
+const {idPacienteIsValid, idMedicoIsValid, idConvenioIsValid, medicoHasConsultaAtSameTime, pacienteHasConsultaAtSameTime} = require('../helper/HelperFunctions');
 
 exports.create = async (req, res) => {
     const consultaReqInfo = {
