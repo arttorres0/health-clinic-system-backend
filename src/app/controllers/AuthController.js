@@ -69,6 +69,27 @@ function checkLoginSignTokenAndSend(res, login, role, senha, validSenha){
     }
 }
 
+exports.getAdminCredentials = async (req, res) => {
+    try {
+        const fileName = path.join(__dirname, '../auth', 'AdminCredentials.json');
+        const file = require(fileName);
+
+        var login = file.adminLogin;
+        //TODO: decrypt senha
+        var senha = file.adminSenha;
+
+        res.send({
+            login,
+            senha
+        })
+            
+    } catch (error) {
+        return res.status(500).send({
+            message: "Erro ao obter credenciais de admin"
+        });
+    }
+};
+
 exports.editAdminCredentials = async (req, res) => {
     if(!req.body.login || !req.body.senha) return res.status(400).send({
         message: "Campos login e senha são obrigatórios"

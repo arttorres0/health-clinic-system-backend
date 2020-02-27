@@ -3,5 +3,7 @@ module.exports = (routes) => {
 
     routes.post('/login', auth.login);
 
+    routes.get('/admin', auth.getAdminCredentials);
+
     routes.put('/admin', auth.editAdminCredentials);
 }
