@@ -58,12 +58,13 @@ exports.findAll = (req, res) => {
         .limit(limitPerPage)
         .then(medicos => {
 
-            //TODO: skip this is if logged in user is ADMIN
-            medicos.map((medico) => {
-                medico.login = undefined;
-                medico.senha = undefined;
-                return medico;
-            });
+            if(req.user.role != "admin"){
+                medicos.map((medico) => {
+                    medico.login = undefined;
+                    medico.senha = undefined;
+                    return medico;
+                });
+            }
 
             Medico.count( query ).exec((error, count) => {
                 if(error) return res.status(500).send({
@@ -89,9 +90,10 @@ exports.findOne = (req, res) => {
     Medico.findById(req.params.medicoId)
         .then(medico => {
             if(medico){
-                //TODO: only returns this values if logged in user is ADMIN
-                medico.login = undefined;
-                medico.senha = undefined;
+                if(req.user.role != "admin"){
+                    medico.login = undefined;
+                    medico.senha = undefined;
+                }
                 return res.send(medico);
             }
 

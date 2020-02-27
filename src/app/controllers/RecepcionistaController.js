@@ -57,12 +57,13 @@ exports.findAll = (req, res) => {
         .limit(limitPerPage)
         .then(recepcionistas => {
 
-            //TODO: skip this is if logged in user is ADMIN
-            recepcionistas.map((recepcionista) => {
-                recepcionista.login = undefined;
-                recepcionista.senha = undefined;
-                return recepcionista;
-            });
+            if(req.user.role != "admin"){
+                recepcionistas.map((recepcionista) => {
+                    recepcionista.login = undefined;
+                    recepcionista.senha = undefined;
+                    return recepcionista;
+                });
+            }
 
             Recepcionista.count( query ).exec((error, count) => {
                 if(error) return res.status(500).send({
@@ -88,9 +89,10 @@ exports.findOne = (req, res) => {
     Recepcionista.findById(req.params.recepcionistaId)
         .then(recepcionista => {
             if(recepcionista){
-                //TODO: only returns this values if logged in user is ADMIN
-                recepcionista.login = undefined;
-                recepcionista.senha = undefined;
+                if(req.user.role != "admin"){
+                    recepcionista.login = undefined;
+                    recepcionista.senha = undefined;
+                }
                 return res.send(recepcionista);
             }
 
