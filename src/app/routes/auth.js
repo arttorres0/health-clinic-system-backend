@@ -1,12 +1,20 @@
-const Roles = require('../auth/Roles');
-const {authorizeByRole} = require('../auth/authMiddleware');
+const Roles = require("../auth/Roles");
+const { authorizeByRole } = require("../auth/authMiddleware");
 
-module.exports = (routes) => {
-    const auth = require('../controllers/AuthController');
+module.exports = routes => {
+  const auth = require("../controllers/AuthController");
 
-    routes.post('/login', auth.login);
+  routes.post("/login", auth.login);
 
-    routes.get('/admin', authorizeByRole([Roles.ADMIN]), auth.getAdminCredentials);
+  routes.get(
+    "/admin",
+    authorizeByRole([Roles.ADMIN]),
+    auth.getAdminCredentials
+  );
 
-    routes.put('/admin', authorizeByRole([Roles.ADMIN]), auth.editAdminCredentials);
-}
+  routes.put(
+    "/admin",
+    authorizeByRole([Roles.ADMIN]),
+    auth.editAdminCredentials
+  );
+};
