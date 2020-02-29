@@ -6,6 +6,10 @@ const { jwtKey } = require("../../config.json");
 const {
   loginAlreadyExistsForMedicoOrRecepcionista
 } = require("../helper/DatabaseFunctions");
+const {
+  encryptPassword,
+  decryptPassword
+} = require("../helper/CryptoFunctions");
 const Recepcionista = require("../models/Recepcionista");
 const Medico = require("../models/Medico");
 
@@ -68,8 +72,7 @@ exports.login = async (req, res) => {
 };
 
 function checkLoginSignTokenAndSend(res, login, role, senha, validSenha) {
-  //TODO: decrypt validSenha
-  if (senha == validSenha) {
+  if (senha == decryptPassword(validSenha)) {
     const token = jwt.sign({ login, role }, jwtKey, { expiresIn: "24h" });
     return res.send({
       token,
@@ -88,8 +91,7 @@ exports.getAdminCredentials = async (req, res) => {
     const file = require(fileName);
 
     var login = file.adminLogin;
-    //TODO: decrypt senha
-    var senha = file.adminSenha;
+    var senha = decryptPassword(file.adminSenha);
 
     res.send({
       login,
@@ -117,8 +119,7 @@ exports.editAdminCredentials = async (req, res) => {
   const file = require(fileName);
 
   file.adminLogin = req.body.login;
-  //TODO: encrypt senha
-  file.adminSenha = req.body.senha;
+  file.adminSenha = encryptPassword(req.body.senha);
 
   fs.writeFile(fileName, JSON.stringify(file, null, 2), function writeJSON(
     err

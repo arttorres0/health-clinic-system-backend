@@ -2,13 +2,13 @@ const Medico = require("../models/Medico");
 const {
   loginAlreadyExistsForAdminOrRecepcionista
 } = require("../helper/DatabaseFunctions");
+const { encryptPassword } = require("../helper/CryptoFunctions");
 
 exports.create = async (req, res) => {
-  //TODO: encrypt password
   const medicoReqInfo = {
     nome: req.body.nome,
     login: req.body.login,
-    senha: req.body.senha,
+    senha: encryptPassword(req.body.senha),
     cpf: req.body.cpf,
     email: req.body.email,
     telefone: req.body.telefone,
@@ -45,16 +45,14 @@ exports.create = async (req, res) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
-        return res
-          .status(409)
-          .send({
-            message:
-              "Médico com " +
-              duplicatedKey +
-              " " +
-              duplicatedValue +
-              " já existente"
-          });
+        return res.status(409).send({
+          message:
+            "Médico com " +
+            duplicatedKey +
+            " " +
+            duplicatedValue +
+            " já existente"
+        });
       }
 
       return res.status(500).send({
@@ -132,6 +130,8 @@ exports.findOne = (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  req.body.senha = encryptPassword(req.body.senha);
+
   var validationError = Medico.joiValidate(req.body);
 
   if (validationError.error)
@@ -164,16 +164,14 @@ exports.update = async (req, res) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
-        return res
-          .status(409)
-          .send({
-            message:
-              "Médico com " +
-              duplicatedKey +
-              " " +
-              duplicatedValue +
-              " já existente"
-          });
+        return res.status(409).send({
+          message:
+            "Médico com " +
+            duplicatedKey +
+            " " +
+            duplicatedValue +
+            " já existente"
+        });
       }
 
       return res.status(500).send({

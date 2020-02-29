@@ -1,5 +1,6 @@
 {
   "jwtKey": "pwRWOE8GVZ2qMV7TA2m5",
+  "cryptoKey": "JVcnJOb0fn9Icjt1Fz4Q",
   "port": 3000,
   "dbUri": "mongodb://localhost:27017/health-clinic"
 }

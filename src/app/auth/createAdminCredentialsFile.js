@@ -3,6 +3,7 @@ const fs = require("fs");
 const {
   loginAlreadyExistsForMedicoOrRecepcionista
 } = require("../helper/DatabaseFunctions");
+const { encryptPassword } = require("../helper/CryptoFunctions");
 
 exports.createAdminCredentialsFile = () => {
   console.log("Creating Admin credentials file");
@@ -32,7 +33,9 @@ exports.createAdminCredentialsFile = () => {
           adminCredentials.adminLogin = adminCredentials.adminLogin + auxAppend;
         }
 
-        //TODO: encrypt password
+        adminCredentials.adminSenha = encryptPassword(
+          adminCredentials.adminSenha
+        );
 
         fs.writeFile(
           adminCredentialsFilePath,
