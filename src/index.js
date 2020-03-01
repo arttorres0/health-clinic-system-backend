@@ -33,6 +33,11 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
 app.use(expressJwt({ secret: jwtKey }).unless({ path: "/login" }));
 app.use(authorize);
 
