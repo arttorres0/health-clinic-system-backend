@@ -5,7 +5,7 @@ const ReceitaDeMedicamentoSchema = mongoose.Schema(
   {
     idPaciente: mongoose.Types.ObjectId,
     idMedico: mongoose.Types.ObjectId,
-    data: Date,
+    data: String,
     idMedicamento: mongoose.Types.ObjectId,
     observacao: String
   },

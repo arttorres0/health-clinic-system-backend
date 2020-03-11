@@ -7,7 +7,7 @@ const PacienteSchema = mongoose.Schema(
     cpf: { type: String, unique: true },
     email: String,
     telefone: String,
-    dataDeNascimento: Date,
+    dataDeNascimento: String,
     ativo: Boolean
   },
   {

@@ -6,7 +6,7 @@ const SolicitacaoDeExameSchema = mongoose.Schema(
   {
     idPaciente: mongoose.Types.ObjectId,
     idMedico: mongoose.Types.ObjectId,
-    data: Date,
+    data: String,
     exame: String,
     nomeArquivoResultado: String,
     observacao: String

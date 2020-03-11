@@ -5,7 +5,7 @@ const ConsultaSchema = mongoose.Schema(
   {
     idPaciente: mongoose.Types.ObjectId,
     idMedico: mongoose.Types.ObjectId,
-    data: Date,
+    data: String,
     hora: Number,
     status: String,
     tipo: String,

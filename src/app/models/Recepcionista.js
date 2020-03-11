@@ -9,8 +9,8 @@ const RecepcionistaSchema = mongoose.Schema(
     cpf: { type: String, unique: true },
     email: String,
     telefone: String,
-    dataDeNascimento: Date,
-    dataDeAdmissão: Date,
+    dataDeNascimento: String,
+    dataDeAdmissão: String,
     ativo: Boolean
   },
   {

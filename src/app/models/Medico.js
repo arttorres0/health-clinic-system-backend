@@ -10,8 +10,8 @@ const MedicoSchema = mongoose.Schema(
     email: String,
     telefone: String,
     crm: { type: String, unique: true },
-    dataDeNascimento: Date,
-    dataDeAdmissão: Date,
+    dataDeNascimento: String,
+    dataDeAdmissão: String,
     ativo: Boolean
   },
   {
