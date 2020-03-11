@@ -99,23 +99,23 @@ exports.idMedicamentoIsValid = async idMedicamento => {
 
 exports.medicoHasConsultaAtSameTime = async (
   idMedico,
-  date,
-  hour,
+  data,
+  hora,
   idConsulta = null
 ) => {
   try {
     if (idConsulta) {
       var foundConsultaMedico = await Consulta.findOne({
         idMedico,
-        date,
-        hour,
+        data,
+        hora,
         _id: { $ne: idConsulta }
       });
     } else {
       var foundConsultaMedico = await Consulta.findOne({
         idMedico,
-        date,
-        hour
+        data,
+        hora
       });
     }
 
@@ -129,23 +129,23 @@ exports.medicoHasConsultaAtSameTime = async (
 
 exports.pacienteHasConsultaAtSameTime = async (
   idPaciente,
-  date,
-  hour,
+  data,
+  hora,
   idConsulta = null
 ) => {
   try {
     if (idConsulta) {
       var foundConsultaPaciente = await Consulta.findOne({
         idPaciente,
-        date,
-        hour,
+        data,
+        hora,
         _id: { $ne: idConsulta }
       });
     } else {
       var foundConsultaPaciente = await Consulta.findOne({
         idPaciente,
-        date,
-        hour
+        data,
+        hora
       });
     }
 
