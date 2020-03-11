@@ -31,16 +31,14 @@ exports.create = (req, res) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
-        return res
-          .status(409)
-          .send({
-            message:
-              "Paciente com " +
-              duplicatedKey +
-              " " +
-              duplicatedValue +
-              " já existente"
-          });
+        return res.status(409).send({
+          message:
+            "Paciente com " +
+            duplicatedKey +
+            " " +
+            duplicatedValue +
+            " já existente"
+        });
       }
 
       return res.status(500).send({
@@ -50,8 +48,8 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  var filter = req.body.filter || "";
-  var page = req.body.page || 1;
+  var filter = req.query.filter || "";
+  var page = req.query.page || 1;
   var limitPerPage = 10;
 
   var query = { nome: { $regex: filter } };
@@ -131,16 +129,14 @@ exports.update = (req, res) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
-        return res
-          .status(409)
-          .send({
-            message:
-              "Paciente com " +
-              duplicatedKey +
-              " " +
-              duplicatedValue +
-              " já existente"
-          });
+        return res.status(409).send({
+          message:
+            "Paciente com " +
+            duplicatedKey +
+            " " +
+            duplicatedValue +
+            " já existente"
+        });
       }
 
       return res.status(500).send({

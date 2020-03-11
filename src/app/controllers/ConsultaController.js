@@ -86,14 +86,14 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  var page = req.body.page || 1;
+  var page = req.query.page || 1;
   var limitPerPage = 10;
 
   var query = {};
 
-  req.body.idPaciente ? (query.idPaciente = req.body.idPaciente) : undefined;
-  req.body.idMedico ? (query.idMedico = req.body.idMedico) : undefined;
-  req.body.data ? (query.data = req.body.data) : undefined;
+  req.query.idPaciente ? (query.idPaciente = req.query.idPaciente) : undefined;
+  req.query.idMedico ? (query.idMedico = req.query.idMedico) : undefined;
+  req.query.data ? (query.data = req.query.data) : undefined;
 
   Consulta.find(query)
     .sort({ nome: 1 })

@@ -62,8 +62,8 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  var filter = req.body.filter || "";
-  var page = req.body.page || 1;
+  var filter = req.query.filter || "";
+  var page = req.query.page || 1;
   var limitPerPage = 10;
 
   var query = { nome: { $regex: filter } };
