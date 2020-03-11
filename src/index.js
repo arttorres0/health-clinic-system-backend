@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routes = require("./app/routes/index");
@@ -13,6 +14,8 @@ const { authorize } = require("./app/auth/authMiddleware");
 const {
   createAdminCredentialsFile
 } = require("./app/auth/createAdminCredentialsFile");
+
+app.use(cors());
 
 app.listen(port, () => {
   console.log("Server running on port: " + port);
