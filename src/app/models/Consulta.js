@@ -3,13 +3,13 @@ const Joi = require("@hapi/joi").extend(require("@hapi/joi-date"));
 
 const ConsultaSchema = mongoose.Schema(
   {
-    idPaciente: mongoose.Types.ObjectId,
-    idMedico: mongoose.Types.ObjectId,
+    idPaciente: { type: mongoose.Types.ObjectId, ref: "Paciente" },
+    idMedico: { type: mongoose.Types.ObjectId, ref: "Medico" },
     data: String,
     hora: Number,
     status: String,
     tipo: String,
-    idConvenio: mongoose.Types.ObjectId
+    idConvenio: { type: mongoose.Types.ObjectId, ref: "Convenio" }
   },
   {
     timestamps: true

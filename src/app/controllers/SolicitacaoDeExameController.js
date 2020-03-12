@@ -68,6 +68,8 @@ exports.findAll = (req, res) => {
     .sort({ nome: 1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
+    .populate("idMedico", "nome")
+    .populate("idPaciente", "nome")
     .then(solicitacoesDeExame => {
       SolicitacaoDeExame.count(query).exec((error, count) => {
         if (error)
@@ -93,6 +95,8 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
   SolicitacaoDeExame.findById(req.params.solicitacaoDeExameId)
+    .populate("idMedico", "nome cpf")
+    .populate("idPaciente", "nome cpf")
     .then(solicitacaoDeExame => {
       if (solicitacaoDeExame) return res.send(solicitacaoDeExame);
 

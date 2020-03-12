@@ -3,10 +3,10 @@ const Joi = require("@hapi/joi").extend(require("@hapi/joi-date"));
 
 const ReceitaDeMedicamentoSchema = mongoose.Schema(
   {
-    idPaciente: mongoose.Types.ObjectId,
-    idMedico: mongoose.Types.ObjectId,
+    idPaciente: { type: mongoose.Types.ObjectId, ref: "Paciente" },
+    idMedico: { type: mongoose.Types.ObjectId, ref: "Medico" },
     data: String,
-    idMedicamento: mongoose.Types.ObjectId,
+    idMedicamento: { type: mongoose.Types.ObjectId, ref: "Medicamento" },
     observacao: String
   },
   {

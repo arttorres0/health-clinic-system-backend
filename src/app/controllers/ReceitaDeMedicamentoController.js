@@ -76,6 +76,9 @@ exports.findAll = (req, res) => {
     .sort({ nome: 1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
+    .populate("idMedico", "nome")
+    .populate("idPaciente", "nome")
+    .populate("idMedicamento", "nomeGenerico")
     .then(receitasDeMedicamento => {
       ReceitaDeMedicamento.count(query).exec((error, count) => {
         if (error)
@@ -102,6 +105,9 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
   ReceitaDeMedicamento.findById(req.params.receitaDeMedicamentoId)
+    .populate("idMedico", "nome cpf")
+    .populate("idPaciente", "nome cpf")
+    .populate("idMedicamento", "nomeGenerico nomeDeFabrica")
     .then(receitaDeMedicamento => {
       if (receitaDeMedicamento) return res.send(receitaDeMedicamento);
 

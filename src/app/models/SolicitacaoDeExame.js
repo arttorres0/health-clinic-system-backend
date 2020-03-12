@@ -4,8 +4,8 @@ const { examTypeList } = require("../models/ListaDeExames");
 
 const SolicitacaoDeExameSchema = mongoose.Schema(
   {
-    idPaciente: mongoose.Types.ObjectId,
-    idMedico: mongoose.Types.ObjectId,
+    idPaciente: { type: mongoose.Types.ObjectId, ref: "Paciente" },
+    idMedico: { type: mongoose.Types.ObjectId, ref: "Medico" },
     data: String,
     exame: String,
     nomeArquivoResultado: String,
