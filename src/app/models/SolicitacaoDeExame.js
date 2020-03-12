@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
+const Joi = require("@hapi/joi").extend(require("@hapi/joi-date"));
 const { examTypeList } = require("../models/ListaDeExames");
 
 const SolicitacaoDeExameSchema = mongoose.Schema(
@@ -26,7 +26,9 @@ SolicitacaoDeExameSchema.statics.joiValidate = obj => {
       .alphanum()
       .length(24)
       .required(),
-    data: Joi.date().required(),
+    data: Joi.date()
+      .format("YYYY-MM-DD")
+      .required(),
     exame: Joi.string()
       .valid(...examTypeList)
       .required(),

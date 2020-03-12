@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
+const Joi = require("@hapi/joi").extend(require("@hapi/joi-date"));
 
 const RecepcionistaSchema = mongoose.Schema(
   {
@@ -33,8 +33,12 @@ RecepcionistaSchema.statics.joiValidate = obj => {
     telefone: Joi.string()
       .regex(/^\d+$/)
       .required(),
-    dataDeNascimento: Joi.date().required(),
-    dataDeAdmissão: Joi.date().required(),
+    dataDeNascimento: Joi.date()
+      .format("YYYY-MM-DD")
+      .required(),
+    dataDeAdmissão: Joi.date()
+      .format("YYYY-MM-DD")
+      .required(),
     ativo: Joi.boolean().required()
   }).validate(obj);
 };

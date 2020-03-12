@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
+const Joi = require("@hapi/joi").extend(require("@hapi/joi-date"));
 
 const MedicoSchema = mongoose.Schema(
   {
@@ -37,8 +37,12 @@ MedicoSchema.statics.joiValidate = obj => {
     crm: Joi.string()
       .regex(/^[0-9]*-[A-Z]{2}/)
       .required(),
-    dataDeNascimento: Joi.date().required(),
-    dataDeAdmissão: Joi.date().required(),
+    dataDeNascimento: Joi.date()
+      .format("YYYY-MM-DD")
+      .required(),
+    dataDeAdmissão: Joi.date()
+      .format("YYYY-MM-DD")
+      .required(),
     ativo: Joi.boolean().required()
   }).validate(obj);
 };
