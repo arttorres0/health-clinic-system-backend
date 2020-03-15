@@ -58,7 +58,7 @@ exports.findAll = (req, res) => {
   };
 
   Medicamento.find(query)
-    .sort({ date: 1, hour: 1 })
+    .sort({ nomeGenerico: 1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
     .then(medicamentos => {

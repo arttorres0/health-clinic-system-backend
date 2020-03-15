@@ -86,19 +86,21 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  var page = req.query.page || 1;
-  var limitPerPage = 10;
-
   var query = {};
+
+  if (req.query.data) {
+    query.data = req.query.data;
+  } else {
+    return res.status(400).send({
+      message: "Campo Data é obrigatório para lista de Consultas"
+    });
+  }
 
   req.query.idPaciente ? (query.idPaciente = req.query.idPaciente) : undefined;
   req.query.idMedico ? (query.idMedico = req.query.idMedico) : undefined;
-  req.query.data ? (query.data = req.query.data) : undefined;
 
   Consulta.find(query)
-    .sort({ nome: 1 })
-    .skip(limitPerPage * page - limitPerPage)
-    .limit(limitPerPage)
+    .sort({ hora: 1 })
     .populate("idMedico", "nome")
     .populate("idPaciente", "nome")
     .populate("idConvenio", "nome")
@@ -111,8 +113,6 @@ exports.findAll = (req, res) => {
 
         return res.send({
           consultas,
-          page,
-          numberOfPages: Math.ceil(count / limitPerPage),
           numberOfResults: count
         });
       });
