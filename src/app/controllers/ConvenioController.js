@@ -64,7 +64,7 @@ exports.findAll = (req, res) => {
         return res.send({
           convenios,
           page,
-          numberOfPages: Math.ceil(count / limitPerPage),
+          pageSize: limitPerPage,
           numberOfResults: count
         });
       });

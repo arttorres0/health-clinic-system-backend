@@ -74,7 +74,7 @@ exports.login = async (req, res) => {
 function checkLoginSignTokenAndSend(res, login, role, senha, validSenha) {
   if (senha == decryptPassword(validSenha)) {
     // const token = jwt.sign({ login, role }, jwtKey, { expiresIn: "24h" });
-    const token = jwt.sign({ login, role }, jwtKey);
+    const token = jwt.sign({ login, role }, jwtKey, { expiresIn: "30d" });
     return res.send({
       token,
       message: "Logado com sucesso"

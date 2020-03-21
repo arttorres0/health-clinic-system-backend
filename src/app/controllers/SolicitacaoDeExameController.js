@@ -81,7 +81,7 @@ exports.findAll = (req, res) => {
         return res.send({
           solicitacoesDeExame,
           page,
-          numberOfPages: Math.ceil(count / limitPerPage),
+          pageSize: limitPerPage,
           numberOfResults: count
         });
       });

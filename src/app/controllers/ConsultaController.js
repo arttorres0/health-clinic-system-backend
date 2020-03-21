@@ -88,40 +88,67 @@ exports.create = async (req, res) => {
 exports.findAll = (req, res) => {
   var query = {};
 
-  if (req.query.data) {
-    query.data = req.query.data;
-  } else {
-    return res.status(400).send({
-      message: "Campo Data é obrigatório para lista de Consultas"
-    });
-  }
-
   req.query.idPaciente ? (query.idPaciente = req.query.idPaciente) : undefined;
   req.query.idMedico ? (query.idMedico = req.query.idMedico) : undefined;
 
-  Consulta.find(query)
-    .sort({ hora: 1 })
-    .populate("idMedico", "nome")
-    .populate("idPaciente", "nome")
-    .populate("idConvenio", "nome")
-    .then(consultas => {
-      Consulta.count(query).exec((error, count) => {
-        if (error)
-          return res.status(500).send({
-            message: err.message || "Erro ao buscar lista de Consultas"
-          });
+  if (req.query.data) {
+    query.data = req.query.data;
 
-        return res.send({
-          consultas,
-          numberOfResults: count
+    Consulta.find(query)
+      .sort({ hora: 1 })
+      .populate("idMedico", "nome")
+      .populate("idPaciente", "nome")
+      .populate("idConvenio", "nome")
+      .then(consultas => {
+        Consulta.count(query).exec((error, count) => {
+          if (error)
+            return res.status(500).send({
+              message: err.message || "Erro ao buscar lista de Consultas"
+            });
+
+          return res.send({
+            consultas,
+            numberOfResults: count
+          });
+        });
+      })
+      .catch(err => {
+        return res.status(500).send({
+          message: err.message || "Erro ao buscar lista de Consultas"
         });
       });
-    })
-    .catch(err => {
-      return res.status(500).send({
-        message: err.message || "Erro ao buscar lista de Consultas"
+  } else {
+    var page = req.query.page || 1;
+    var limitPerPage = 10;
+
+    Consulta.find(query)
+      .sort({ data: 1, hora: 1 })
+      .skip(limitPerPage * page - limitPerPage)
+      .limit(limitPerPage)
+      .populate("idMedico", "nome")
+      .populate("idPaciente", "nome")
+      .populate("idConvenio", "nome")
+      .then(consultas => {
+        Consulta.count(query).exec((error, count) => {
+          if (error)
+            return res.status(500).send({
+              message: err.message || "Erro ao buscar lista de Consultas"
+            });
+
+          return res.send({
+            consultas,
+            page,
+            pageSize: limitPerPage,
+            numberOfResults: count
+          });
+        });
+      })
+      .catch(err => {
+        return res.status(500).send({
+          message: err.message || "Erro ao buscar lista de Consultas"
+        });
       });
-    });
+  }
 };
 
 exports.findOne = (req, res) => {
