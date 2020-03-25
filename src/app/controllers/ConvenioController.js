@@ -21,7 +21,7 @@ exports.create = (req, res) => {
   convenio
     .save()
     .then(convenio => {
-      return res.send(convenio);
+      return res.send({ convenio, message: "Convênio salvo com sucesso" });
     })
     .catch(err => {
       if (err.code === 11000) {
@@ -38,7 +38,7 @@ exports.create = (req, res) => {
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao gravar Convênio"
+        message: err.message || "Erro ao salvar Convênio"
       });
     });
 };
@@ -79,7 +79,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   Convenio.findById(req.params.convenioId)
     .then(convenio => {
-      if (convenio) return res.send(convenio);
+      if (convenio) return res.send({ convenio });
 
       return res.status(404).send({
         message: "Convênio não encontrado"
@@ -110,7 +110,11 @@ exports.update = (req, res) => {
 
   Convenio.findByIdAndUpdate(req.params.convenioId, req.body, { new: true })
     .then(convenio => {
-      if (convenio) return res.send(convenio);
+      if (convenio)
+        return res.send({
+          convenio,
+          message: "Convênio atualizado com sucesso"
+        });
 
       return res.status(404).send({
         message: "Convênio não encontrado"

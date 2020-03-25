@@ -17,7 +17,7 @@ exports.create = (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Paciente"
+        : "Erro nos dados do(a) Paciente"
     });
 
   const paciente = new Paciente(pacienteReqInfo);
@@ -25,7 +25,7 @@ exports.create = (req, res) => {
   paciente
     .save()
     .then(paciente => {
-      return res.send(paciente);
+      return res.send({ paciente, message: "Paciente salvo(a) com sucesso" });
     })
     .catch(err => {
       if (err.code === 11000) {
@@ -42,7 +42,7 @@ exports.create = (req, res) => {
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao gravar Paciente"
+        message: err.message || "Erro ao salvar Paciente"
       });
     });
 };
@@ -83,16 +83,16 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   Paciente.findById(req.params.pacienteId)
     .then(paciente => {
-      if (paciente) return res.send(paciente);
+      if (paciente) return res.send({ paciente });
 
       return res.status(404).send({
-        message: "Paciente não encontrado"
+        message: "Paciente não encontrado(a)"
       });
     })
     .catch(err => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Paciente não encontrado"
+          message: "Paciente não encontrado(a)"
         });
 
       return res.status(500).send({
@@ -109,21 +109,25 @@ exports.update = (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Paciente"
+        : "Erro nos dados do(a) Paciente"
     });
 
   Paciente.findByIdAndUpdate(req.params.pacienteId, req.body, { new: true })
     .then(paciente => {
-      if (paciente) return res.send(paciente);
+      if (paciente)
+        return res.send({
+          paciente,
+          message: "Paciente atualizado(a) com sucesso"
+        });
 
       return res.status(404).send({
-        message: "Paciente não encontrado"
+        message: "Paciente não encontrado(a)"
       });
     })
     .catch(err => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Paciente não encontrado"
+          message: "Paciente não encontrado(a)"
         });
 
       if (err.code === 11000) {

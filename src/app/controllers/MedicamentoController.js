@@ -23,7 +23,10 @@ exports.create = (req, res) => {
   medicamento
     .save()
     .then(medicamento => {
-      return res.send(medicamento);
+      return res.send({
+        medicamento,
+        message: "Medicamento salvo com sucesso"
+      });
     })
     .catch(err => {
       if (err.code === 11000) {
@@ -40,7 +43,7 @@ exports.create = (req, res) => {
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao gravar Medicamento"
+        message: err.message || "Erro ao salvar Medicamento"
       });
     });
 };
@@ -86,7 +89,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   Medicamento.findById(req.params.medicamentoId)
     .then(medicamento => {
-      if (medicamento) return res.send(medicamento);
+      if (medicamento) return res.send({ medicamento });
 
       return res.status(404).send({
         message: "Medicamento não encontrado"
@@ -119,7 +122,11 @@ exports.update = (req, res) => {
     new: true
   })
     .then(medicamento => {
-      if (medicamento) return res.send(medicamento);
+      if (medicamento)
+        return res.send({
+          medicamento,
+          message: "Medicamento atualizado com sucesso"
+        });
 
       return res.status(404).send({
         message: "Medicamento não encontrado"

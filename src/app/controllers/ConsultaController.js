@@ -76,11 +76,11 @@ exports.create = async (req, res) => {
   consulta
     .save()
     .then(consulta => {
-      return res.send(consulta);
+      return res.send({ consulta, message: "Consulta agendada com sucesso" });
     })
     .catch(err => {
       return res.status(500).send({
-        message: err.message || "Erro ao gravar Consulta"
+        message: err.message || "Erro ao agendar Consulta"
       });
     });
 };
@@ -157,7 +157,7 @@ exports.findOne = (req, res) => {
     .populate("idPaciente", "nome cpf")
     .populate("idConvenio", "nome")
     .then(consulta => {
-      if (consulta) return res.send(consulta);
+      if (consulta) return res.send({ consulta });
 
       return res.status(404).send({
         message: "Consulta não encontrada"
@@ -235,7 +235,11 @@ exports.update = async (req, res) => {
     { new: true }
   )
     .then(consulta => {
-      if (consulta) return res.send(consulta);
+      if (consulta)
+        return res.send({
+          consulta,
+          message: "Consulta atualizada com sucesso"
+        });
 
       return res.status(404).send({
         message: "Consulta não encontrada ou com status Confirmada"

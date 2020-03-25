@@ -50,11 +50,14 @@ exports.create = async (req, res) => {
   receitaDeMedicamento
     .save()
     .then(receitaDeMedicamento => {
-      return res.send(receitaDeMedicamento);
+      return res.send({
+        receitaDeMedicamento,
+        message: "Receita de Medicamento salva com sucesso"
+      });
     })
     .catch(err => {
       return res.status(500).send({
-        message: err.message || "Erro ao gravar Receita de Medicamento"
+        message: err.message || "Erro ao salvar Receita de Medicamento"
       });
     });
 };
@@ -109,7 +112,7 @@ exports.findOne = (req, res) => {
     .populate("idPaciente", "nome cpf")
     .populate("idMedicamento", "nomeGenerico nomeDeFabrica")
     .then(receitaDeMedicamento => {
-      if (receitaDeMedicamento) return res.send(receitaDeMedicamento);
+      if (receitaDeMedicamento) return res.send({ receitaDeMedicamento });
 
       return res.status(404).send({
         message: "Receita de Medicamento não encontrada"

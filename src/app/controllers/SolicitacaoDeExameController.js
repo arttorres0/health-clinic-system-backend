@@ -44,11 +44,14 @@ exports.create = async (req, res) => {
   solicitacaoDeExame
     .save()
     .then(solicitacaoDeExame => {
-      return res.send(solicitacaoDeExame);
+      return res.send({
+        solicitacaoDeExame,
+        message: "Solicitação de Exame salva com sucesso"
+      });
     })
     .catch(err => {
       return res.status(500).send({
-        message: err.message || "Erro ao gravar Solicitação de Exame"
+        message: err.message || "Erro ao salvar Solicitação de Exame"
       });
     });
 };
@@ -98,7 +101,7 @@ exports.findOne = (req, res) => {
     .populate("idMedico", "nome cpf")
     .populate("idPaciente", "nome cpf")
     .then(solicitacaoDeExame => {
-      if (solicitacaoDeExame) return res.send(solicitacaoDeExame);
+      if (solicitacaoDeExame) return res.send({ solicitacaoDeExame });
 
       return res.status(404).send({
         message: "Solicitação de Exame não encontrada"

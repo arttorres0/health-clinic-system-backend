@@ -24,7 +24,7 @@ exports.create = async (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Recepcionista"
+        : "Erro nos dados do(a) Recepcionista"
     });
 
   if (await loginAlreadyExistsForAdminOrMedico(recepcionistaReqInfo.login))
@@ -39,7 +39,10 @@ exports.create = async (req, res) => {
   recepcionista
     .save()
     .then(recepcionistaReqInfo => {
-      return res.send(recepcionistaReqInfo);
+      return res.send({
+        recepcionistaReqInfo,
+        message: "Recepcionista salvo(a) com sucesso"
+      });
     })
     .catch(err => {
       if (err.code === 11000) {
@@ -56,7 +59,7 @@ exports.create = async (req, res) => {
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao gravar Recepcionista"
+        message: err.message || "Erro ao salvar Recepcionista"
       });
     });
 };
@@ -110,17 +113,17 @@ exports.findOne = (req, res) => {
           recepcionista.login = undefined;
           recepcionista.senha = undefined;
         }
-        return res.send(recepcionista);
+        return res.send({ recepcionista });
       }
 
       return res.status(404).send({
-        message: "Recepcionista não encontrado"
+        message: "Recepcionista não encontrado(a)"
       });
     })
     .catch(err => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Recepcionista não encontrado"
+          message: "Recepcionista não encontrado(a)"
         });
 
       return res.status(500).send({
@@ -139,7 +142,7 @@ exports.update = async (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Recepcionista"
+        : "Erro nos dados do(a) Recepcionista"
     });
 
   if (await loginAlreadyExistsForAdminOrMedico(req.body.login))
@@ -151,16 +154,20 @@ exports.update = async (req, res) => {
     new: true
   })
     .then(recepcionista => {
-      if (recepcionista) return res.send(recepcionista);
+      if (recepcionista)
+        return res.send({
+          recepcionista,
+          message: "Recepcionista atualizado(a) com sucesso"
+        });
 
       return res.status(404).send({
-        message: "Recepcionista não encontrado"
+        message: "Recepcionista não encontrado(a)"
       });
     })
     .catch(err => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Recepcionista não encontrado"
+          message: "Recepcionista não encontrado(a)"
         });
 
       if (err.code === 11000) {

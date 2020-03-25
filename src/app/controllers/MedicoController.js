@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Médico"
+        : "Erro nos dados do(a) Médico(a)"
     });
 
   if (await loginAlreadyExistsForAdminOrRecepcionista(medicoReqInfo.login))
@@ -39,7 +39,7 @@ exports.create = async (req, res) => {
   medico
     .save()
     .then(medico => {
-      return res.send(medico);
+      return res.send({ medico, message: "Médico(a) salvo(a) com sucesso" });
     })
     .catch(err => {
       if (err.code === 11000) {
@@ -47,7 +47,7 @@ exports.create = async (req, res) => {
         const duplicatedValue = err.keyValue[duplicatedKey];
         return res.status(409).send({
           message:
-            "Médico com " +
+            "Médico(a) com " +
             duplicatedKey +
             " " +
             duplicatedValue +
@@ -56,7 +56,7 @@ exports.create = async (req, res) => {
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao gravar Médico"
+        message: err.message || "Erro ao salvar Médico(a)"
       });
     });
 };
@@ -110,21 +110,21 @@ exports.findOne = (req, res) => {
           medico.login = undefined;
           medico.senha = undefined;
         }
-        return res.send(medico);
+        return res.send({ medico });
       }
 
       return res.status(404).send({
-        message: "Médico não encontrado"
+        message: "Médico(a) não encontrado(a)"
       });
     })
     .catch(err => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Médico não encontrado"
+          message: "Médico(a) não encontrado(a)"
         });
 
       return res.status(500).send({
-        message: "Erro ao buscar Médico"
+        message: "Erro ao buscar Médico(a)"
       });
     });
 };
@@ -139,7 +139,7 @@ exports.update = async (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Médico"
+        : "Erro nos dados do(a) Médico(a)"
     });
 
   if (await loginAlreadyExistsForAdminOrRecepcionista(req.body.login))
@@ -149,16 +149,20 @@ exports.update = async (req, res) => {
 
   Medico.findByIdAndUpdate(req.params.medicoId, req.body, { new: true })
     .then(medico => {
-      if (medico) return res.send(medico);
+      if (medico)
+        return res.send({
+          medico,
+          message: "Médico(a) atualizado(a) com sucesso"
+        });
 
       return res.status(404).send({
-        message: "Médico não encontrado"
+        message: "Médico(a) não encontrado(a)"
       });
     })
     .catch(err => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Médico não encontrado"
+          message: "Médico(a) não encontrado(a)"
         });
 
       if (err.code === 11000) {
@@ -166,7 +170,7 @@ exports.update = async (req, res) => {
         const duplicatedValue = err.keyValue[duplicatedKey];
         return res.status(409).send({
           message:
-            "Médico com " +
+            "Médico(a) com " +
             duplicatedKey +
             " " +
             duplicatedValue +
@@ -175,7 +179,7 @@ exports.update = async (req, res) => {
       }
 
       return res.status(500).send({
-        message: "Erro ao atualizar Médico"
+        message: "Erro ao atualizar Médico(a)"
       });
     });
 };
