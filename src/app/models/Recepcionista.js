@@ -10,7 +10,7 @@ const RecepcionistaSchema = mongoose.Schema(
     email: String,
     telefone: String,
     dataDeNascimento: String,
-    dataDeAdmissão: String,
+    dataDeAdmissao: String,
     ativo: Boolean
   },
   {
@@ -36,7 +36,7 @@ RecepcionistaSchema.statics.joiValidate = obj => {
     dataDeNascimento: Joi.date()
       .format("YYYY-MM-DD")
       .required(),
-    dataDeAdmissão: Joi.date()
+    dataDeAdmissao: Joi.date()
       .format("YYYY-MM-DD")
       .required(),
     ativo: Joi.boolean().required()

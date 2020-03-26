@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     email: req.body.email,
     telefone: req.body.telefone,
     dataDeNascimento: new Date(req.body.dataDeNascimento),
-    dataDeAdmissão: new Date(req.body.dataDeAdmissão),
+    dataDeAdmissao: new Date(req.body.dataDeAdmissão),
     ativo: true
   };
 

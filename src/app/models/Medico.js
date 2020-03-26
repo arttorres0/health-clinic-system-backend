@@ -11,7 +11,7 @@ const MedicoSchema = mongoose.Schema(
     telefone: String,
     crm: { type: String, unique: true },
     dataDeNascimento: String,
-    dataDeAdmissão: String,
+    dataDeAdmissao: String,
     ativo: Boolean
   },
   {
@@ -40,7 +40,7 @@ MedicoSchema.statics.joiValidate = obj => {
     dataDeNascimento: Joi.date()
       .format("YYYY-MM-DD")
       .required(),
-    dataDeAdmissão: Joi.date()
+    dataDeAdmissao: Joi.date()
       .format("YYYY-MM-DD")
       .required(),
     ativo: Joi.boolean().required()
