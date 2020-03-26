@@ -122,7 +122,7 @@ exports.findAll = (req, res) => {
     var limitPerPage = 10;
 
     Consulta.find(query)
-      .sort({ data: 1, hora: 1 })
+      .sort({ data: -1, hora: 1 })
       .skip(limitPerPage * page - limitPerPage)
       .limit(limitPerPage)
       .populate("idMedico", "nome")

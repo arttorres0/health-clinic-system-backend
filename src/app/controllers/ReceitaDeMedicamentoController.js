@@ -76,7 +76,7 @@ exports.findAll = (req, res) => {
   req.query.data ? (query.data = req.query.data) : undefined;
 
   ReceitaDeMedicamento.find(query)
-    .sort({ data: 1 })
+    .sort({ data: -1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
     .populate("idMedico", "nome")
