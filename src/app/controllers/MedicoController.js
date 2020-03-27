@@ -2,7 +2,10 @@ const Medico = require("../models/Medico");
 const {
   loginAlreadyExistsForAdminOrRecepcionista
 } = require("../helper/DatabaseFunctions");
-const { encryptPassword } = require("../helper/CryptoFunctions");
+const {
+  encryptPassword,
+  decryptPassword
+} = require("../helper/CryptoFunctions");
 
 exports.create = async (req, res) => {
   const medicoReqInfo = {
@@ -13,8 +16,8 @@ exports.create = async (req, res) => {
     email: req.body.email,
     telefone: req.body.telefone,
     crm: req.body.crm,
-    dataDeNascimento: new Date(req.body.dataDeNascimento),
-    dataDeAdmissao: new Date(req.body.dataDeAdmissão),
+    dataDeNascimento: req.body.dataDeNascimento,
+    dataDeAdmissao: req.body.dataDeAdmissao,
     ativo: true
   };
 
@@ -73,13 +76,15 @@ exports.findAll = (req, res) => {
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
     .then(medicos => {
-      if (req.user.role != "admin") {
-        medicos.map(medico => {
+      medicos.map(medico => {
+        if (req.user.role !== "admin") {
           medico.login = undefined;
           medico.senha = undefined;
-          return medico;
-        });
-      }
+        } else {
+          medico.senha = decryptPassword(medico.senha);
+        }
+        return medico;
+      });
 
       Medico.count(query).exec((error, count) => {
         if (error)
@@ -109,6 +114,8 @@ exports.findOne = (req, res) => {
         if (req.user.role != "admin") {
           medico.login = undefined;
           medico.senha = undefined;
+        } else {
+          medico.senha = decryptPassword(medico.senha);
         }
         return res.send({ medico });
       }

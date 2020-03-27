@@ -6,7 +6,7 @@ exports.create = (req, res) => {
     cpf: req.body.cpf,
     email: req.body.email,
     telefone: req.body.telefone,
-    dataDeNascimento: new Date(req.body.dataDeNascimento),
+    dataDeNascimento: req.body.dataDeNascimento,
     ativo: true
   };
 

@@ -2,7 +2,10 @@ const Recepcionista = require("../models/Recepcionista");
 const {
   loginAlreadyExistsForAdminOrMedico
 } = require("../helper/DatabaseFunctions");
-const { encryptPassword } = require("../helper/CryptoFunctions");
+const {
+  encryptPassword,
+  decryptPassword
+} = require("../helper/CryptoFunctions");
 
 exports.create = async (req, res) => {
   const recepcionistaReqInfo = {
@@ -12,8 +15,8 @@ exports.create = async (req, res) => {
     cpf: req.body.cpf,
     email: req.body.email,
     telefone: req.body.telefone,
-    dataDeNascimento: new Date(req.body.dataDeNascimento),
-    dataDeAdmissao: new Date(req.body.dataDeAdmissão),
+    dataDeNascimento: req.body.dataDeNascimento,
+    dataDeAdmissao: req.body.dataDeAdmissao,
     ativo: true
   };
 
@@ -76,13 +79,15 @@ exports.findAll = (req, res) => {
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
     .then(recepcionistas => {
-      if (req.user.role != "admin") {
-        recepcionistas.map(recepcionista => {
+      recepcionistas.map(recepcionista => {
+        if (req.user.role != "admin") {
           recepcionista.login = undefined;
           recepcionista.senha = undefined;
-          return recepcionista;
-        });
-      }
+        } else {
+          recepcionista.senha = decryptPassword(recepcionista.senha);
+        }
+        return recepcionista;
+      });
 
       Recepcionista.count(query).exec((error, count) => {
         if (error)
@@ -112,6 +117,8 @@ exports.findOne = (req, res) => {
         if (req.user.role != "admin") {
           recepcionista.login = undefined;
           recepcionista.senha = undefined;
+        } else {
+          recepcionista.senha = decryptPassword(recepcionista.senha);
         }
         return res.send({ recepcionista });
       }
