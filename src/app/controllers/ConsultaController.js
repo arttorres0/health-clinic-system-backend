@@ -262,7 +262,7 @@ exports.delete = (req, res) => {
     .then(consulta => {
       if (consulta)
         return res.send({
-          message: "Consulta deletada com sucesso"
+          message: "Consulta cancelada com sucesso"
         });
 
       return res.status(404).send({
