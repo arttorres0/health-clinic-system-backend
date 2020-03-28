@@ -50,6 +50,7 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
   var filter = req.query.filter || "";
+  var ativo = req.query.ativo;
   var page = req.query.page || 1;
   var limitPerPage = 10;
 
@@ -59,6 +60,7 @@ exports.findAll = (req, res) => {
       { nomeDeFabrica: { $regex: filter } }
     ]
   };
+  if (ativo != undefined) query.ativo = ativo;
 
   Medicamento.find(query)
     .sort({ nomeGenerico: 1 })

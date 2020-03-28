@@ -49,10 +49,12 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
   var filter = req.query.filter || "";
+  var ativo = req.query.ativo;
   var page = req.query.page || 1;
   var limitPerPage = 10;
 
   var query = { nome: { $regex: filter } };
+  if (ativo != undefined) query.ativo = ativo;
 
   Paciente.find(query)
     .sort({ nome: 1 })
