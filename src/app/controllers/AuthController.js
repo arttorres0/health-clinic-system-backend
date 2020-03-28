@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
         adminSenha
       );
     } else {
-      Medico.findOne({ login }).then(medico => {
+      Medico.findOne({ login, ativo: true }).then(medico => {
         if (medico) {
           return checkLoginSignTokenAndSend(
             res,
@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
             medico.senha
           );
         } else {
-          Recepcionista.findOne({ login }).then(recepcionista => {
+          Recepcionista.findOne({ login, ativo: true }).then(recepcionista => {
             if (recepcionista) {
               return checkLoginSignTokenAndSend(
                 res,
