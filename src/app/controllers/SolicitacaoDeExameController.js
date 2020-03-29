@@ -64,7 +64,6 @@ exports.findAll = (req, res) => {
 
   req.query.idPaciente ? (query.idPaciente = req.query.idPaciente) : undefined;
   req.query.idMedico ? (query.idMedico = req.query.idMedico) : undefined;
-  req.query.exame ? (query.exame = req.query.exame) : undefined;
   req.query.data ? (query.data = req.query.data) : undefined;
 
   SolicitacaoDeExame.find(query)

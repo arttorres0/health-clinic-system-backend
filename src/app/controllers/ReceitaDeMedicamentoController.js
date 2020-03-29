@@ -70,9 +70,6 @@ exports.findAll = (req, res) => {
 
   req.query.idPaciente ? (query.idPaciente = req.query.idPaciente) : undefined;
   req.query.idMedico ? (query.idMedico = req.query.idMedico) : undefined;
-  req.query.idMedicamento
-    ? (query.idMedicamento = req.query.idMedicamento)
-    : undefined;
   req.query.data ? (query.data = req.query.data) : undefined;
 
   ReceitaDeMedicamento.find(query)
@@ -81,7 +78,7 @@ exports.findAll = (req, res) => {
     .limit(limitPerPage)
     .populate("idMedico", "nome")
     .populate("idPaciente", "nome")
-    .populate("idMedicamento", "nomeGenerico")
+    .populate("idMedicamento", "nomeGenerico nomeDeFabrica")
     .then(receitasDeMedicamento => {
       ReceitaDeMedicamento.count(query).exec((error, count) => {
         if (error)
