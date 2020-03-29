@@ -41,9 +41,9 @@ exports.create = async (req, res) => {
 
   recepcionista
     .save()
-    .then(recepcionistaReqInfo => {
+    .then(recepcionista => {
       return res.send({
-        recepcionistaReqInfo,
+        recepcionista,
         message: "Recepcionista salvo(a) com sucesso"
       });
     })
