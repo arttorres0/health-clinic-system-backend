@@ -121,7 +121,7 @@ exports.findOne = (req, res) => {
 exports.examTypeList = (req, res) => {
   try {
     return res.send({
-      listaDeTiposDeExame: examTypeList
+      listaDeTiposDeExame: examTypeList.examTypeList
     });
   } catch (error) {
     return res.status(500).send({
@@ -137,14 +137,17 @@ exports.saveExamResult = (req, res) => {
     });
 
   var arquivoResultadoExame = req.files.arquivoResultadoExame;
+
   var extensaoArquivo =
     "." +
     arquivoResultadoExame.name.split(".")[
       arquivoResultadoExame.name.split(".").length - 1
     ];
 
+  var nomeArquivo = arquivoResultadoExame.name.split(extensaoArquivo)[0];
+
   var novoNomeArquivoResultado =
-    req.params.solicitacaoDeExameId + extensaoArquivo;
+    nomeArquivo + "_" + req.params.solicitacaoDeExameId + extensaoArquivo;
 
   arquivoResultadoExame.mv(
     path.join(
