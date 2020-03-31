@@ -1,13 +1,17 @@
 exports.examTypeList = [
-  "Exame1",
-  "Exame2",
-  "Exame3",
-  "Exame4",
-  "Exame5",
-  "Exame6",
-  "Exame7",
-  "Exame8",
-  "Exame9",
-  "Exame10",
-  "Exame11"
+  "Hemograma Completo",
+  "PSA",
+  "Glicose",
+  "TSH",
+  "T3",
+  "T4",
+  "Testosterona",
+  "Progesterona",
+  "Prolactina",
+  "IGF-1",
+  "GH",
+  "FSH",
+  "LH",
+  "Estradiol",
+  "Cortisol"
 ];
