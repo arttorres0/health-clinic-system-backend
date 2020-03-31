@@ -1,12 +1,12 @@
 const CryptoJS = require("crypto-js");
-const key = require("../../config.json")["cryptoKey"];
+const { cryptoKey } = require("../../config");
 
 exports.encryptPassword = decryptedPassword => {
-  return CryptoJS.AES.encrypt(decryptedPassword, key).toString();
+  return CryptoJS.AES.encrypt(decryptedPassword, cryptoKey).toString();
 };
 
 exports.decryptPassword = encryptedPassword => {
-  return CryptoJS.AES.decrypt(encryptedPassword, key).toString(
+  return CryptoJS.AES.decrypt(encryptedPassword, cryptoKey).toString(
     CryptoJS.enc.Utf8
   );
 };

@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const Roles = require("../auth/Roles");
-const { jwtKey } = require("../../config.json");
+const { jwtKey } = require("../../config");
 const {
   loginAlreadyExistsForMedicoOrRecepcionista
 } = require("../helper/DatabaseFunctions");

@@ -4,16 +4,14 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const routes = require("./app/routes/index");
-const { port, dbUri } = require("./config.json");
-
 const fileUpload = require("express-fileupload");
-
 const expressJwt = require("express-jwt");
-const { jwtKey } = require("./config.json");
 const { authorize } = require("./app/auth/authMiddleware");
 const {
   createAdminCredentialsFile
 } = require("./app/auth/createAdminCredentialsFile");
+
+const { port, jwtKey, dbUri } = require("./config");
 
 app.use(cors());
 
