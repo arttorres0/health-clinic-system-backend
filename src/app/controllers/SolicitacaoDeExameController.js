@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
     idPaciente: req.body.idPaciente,
     idMedico: req.body.idMedico,
     data: req.body.data,
-    exame: req.body.exame
+    exames: req.body.exames
   };
 
   if (req.body.observacao)
