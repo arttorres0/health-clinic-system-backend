@@ -3,7 +3,7 @@ const Convenio = require("../models/Convenio");
 exports.create = (req, res) => {
   const convenioReqInfo = {
     nome: req.body.nome,
-    ativo: true
+    ativo: true,
   };
 
   var validationError = Convenio.joiValidate(convenioReqInfo);
@@ -13,17 +13,17 @@ exports.create = (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Convênio"
+        : "Erro nos dados do Convênio",
     });
 
   const convenio = new Convenio(convenioReqInfo);
 
   convenio
     .save()
-    .then(convenio => {
+    .then((convenio) => {
       return res.send({ convenio, message: "Convênio salvo com sucesso" });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
@@ -33,12 +33,12 @@ exports.create = (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao salvar Convênio"
+        message: err.message || "Erro ao salvar Convênio",
       });
     });
 };
@@ -49,52 +49,52 @@ exports.findAll = (req, res) => {
   var page = req.query.page || 1;
   var limitPerPage = 10;
 
-  var query = { nome: { $regex: filter } };
+  var query = { nome: { $regex: filter, $options: "i" } };
   if (ativo != undefined) query.ativo = ativo;
 
   Convenio.find(query)
     .sort({ nome: 1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
-    .then(convenios => {
+    .then((convenios) => {
       Convenio.count(query).exec((error, count) => {
         if (error)
           return res.status(500).send({
-            message: err.message || "Erro ao buscar lista de Convênios"
+            message: err.message || "Erro ao buscar lista de Convênios",
           });
 
         return res.send({
           convenios,
           page,
           pageSize: limitPerPage,
-          numberOfResults: count
+          numberOfResults: count,
         });
       });
     })
-    .catch(err => {
+    .catch((err) => {
       return res.status(500).send({
-        message: err.message || "Erro ao buscar lista de Convênios"
+        message: err.message || "Erro ao buscar lista de Convênios",
       });
     });
 };
 
 exports.findOne = (req, res) => {
   Convenio.findById(req.params.convenioId)
-    .then(convenio => {
+    .then((convenio) => {
       if (convenio) return res.send({ convenio });
 
       return res.status(404).send({
-        message: "Convênio não encontrado"
+        message: "Convênio não encontrado",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Convênio não encontrado"
+          message: "Convênio não encontrado",
         });
 
       return res.status(500).send({
-        message: "Erro ao buscar Convênio"
+        message: "Erro ao buscar Convênio",
       });
     });
 };
@@ -107,25 +107,25 @@ exports.update = (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Convênio"
+        : "Erro nos dados do Convênio",
     });
 
   Convenio.findByIdAndUpdate(req.params.convenioId, req.body, { new: true })
-    .then(convenio => {
+    .then((convenio) => {
       if (convenio)
         return res.send({
           convenio,
-          message: "Convênio atualizado com sucesso"
+          message: "Convênio atualizado com sucesso",
         });
 
       return res.status(404).send({
-        message: "Convênio não encontrado"
+        message: "Convênio não encontrado",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Convênio não encontrado"
+          message: "Convênio não encontrado",
         });
 
       if (err.code === 11000) {
@@ -137,12 +137,12 @@ exports.update = (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: "Erro ao atualizar Convênio"
+        message: "Erro ao atualizar Convênio",
       });
     });
 };

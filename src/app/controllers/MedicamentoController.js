@@ -5,7 +5,7 @@ exports.create = (req, res) => {
     nomeGenerico: req.body.nomeGenerico,
     nomeDeFabrica: req.body.nomeDeFabrica,
     fabricante: req.body.fabricante,
-    ativo: true
+    ativo: true,
   };
 
   var validationError = Medicamento.joiValidate(medicamentoReqInfo);
@@ -15,20 +15,20 @@ exports.create = (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Medicamento"
+        : "Erro nos dados do Medicamento",
     });
 
   const medicamento = new Medicamento(medicamentoReqInfo);
 
   medicamento
     .save()
-    .then(medicamento => {
+    .then((medicamento) => {
       return res.send({
         medicamento,
-        message: "Medicamento salvo com sucesso"
+        message: "Medicamento salvo com sucesso",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
@@ -38,12 +38,12 @@ exports.create = (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao salvar Medicamento"
+        message: err.message || "Erro ao salvar Medicamento",
       });
     });
 };
@@ -56,9 +56,9 @@ exports.findAll = (req, res) => {
 
   var query = {
     $or: [
-      { nomeGenerico: { $regex: filter } },
-      { nomeDeFabrica: { $regex: filter } }
-    ]
+      { nomeGenerico: { $regex: filter, $options: "i" } },
+      { nomeDeFabrica: { $regex: filter, $options: "i" } },
+    ],
   };
   if (ativo != undefined) query.ativo = ativo;
 
@@ -66,45 +66,45 @@ exports.findAll = (req, res) => {
     .sort({ nomeGenerico: 1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
-    .then(medicamentos => {
+    .then((medicamentos) => {
       Medicamento.count(query).exec((error, count) => {
         if (error)
           return res.status(500).send({
-            message: err.message || "Erro ao buscar lista de Medicamentos"
+            message: err.message || "Erro ao buscar lista de Medicamentos",
           });
 
         return res.send({
           medicamentos,
           page,
           pageSize: limitPerPage,
-          numberOfResults: count
+          numberOfResults: count,
         });
       });
     })
-    .catch(err => {
+    .catch((err) => {
       return res.status(500).send({
-        message: err.message || "Erro ao buscar lista de Medicamentos"
+        message: err.message || "Erro ao buscar lista de Medicamentos",
       });
     });
 };
 
 exports.findOne = (req, res) => {
   Medicamento.findById(req.params.medicamentoId)
-    .then(medicamento => {
+    .then((medicamento) => {
       if (medicamento) return res.send({ medicamento });
 
       return res.status(404).send({
-        message: "Medicamento não encontrado"
+        message: "Medicamento não encontrado",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Medicamento não encontrado"
+          message: "Medicamento não encontrado",
         });
 
       return res.status(500).send({
-        message: "Erro ao buscar Medicamento"
+        message: "Erro ao buscar Medicamento",
       });
     });
 };
@@ -117,27 +117,27 @@ exports.update = (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do Medicamento"
+        : "Erro nos dados do Medicamento",
     });
 
   Medicamento.findByIdAndUpdate(req.params.medicamentoId, req.body, {
-    new: true
+    new: true,
   })
-    .then(medicamento => {
+    .then((medicamento) => {
       if (medicamento)
         return res.send({
           medicamento,
-          message: "Medicamento atualizado com sucesso"
+          message: "Medicamento atualizado com sucesso",
         });
 
       return res.status(404).send({
-        message: "Medicamento não encontrado"
+        message: "Medicamento não encontrado",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Medicamento não encontrado"
+          message: "Medicamento não encontrado",
         });
 
       if (err.code === 11000) {
@@ -149,12 +149,12 @@ exports.update = (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: "Erro ao atualizar Medicamento"
+        message: "Erro ao atualizar Medicamento",
       });
     });
 };

@@ -1,10 +1,10 @@
 const Recepcionista = require("../models/Recepcionista");
 const {
-  loginAlreadyExistsForAdminOrMedico
+  loginAlreadyExistsForAdminOrMedico,
 } = require("../helper/DatabaseFunctions");
 const {
   encryptPassword,
-  decryptPassword
+  decryptPassword,
 } = require("../helper/CryptoFunctions");
 
 exports.create = async (req, res) => {
@@ -17,7 +17,7 @@ exports.create = async (req, res) => {
     telefone: req.body.telefone,
     dataDeNascimento: req.body.dataDeNascimento,
     dataDeAdmissao: req.body.dataDeAdmissao,
-    ativo: true
+    ativo: true,
   };
 
   var validationError = Recepcionista.joiValidate(recepcionistaReqInfo);
@@ -27,27 +27,27 @@ exports.create = async (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do(a) Recepcionista"
+        : "Erro nos dados do(a) Recepcionista",
     });
 
   if (await loginAlreadyExistsForAdminOrMedico(recepcionistaReqInfo.login))
     return res.status(400).send({
       message:
         "Outro usuário do sistema já possui o login " +
-        recepcionistaReqInfo.login
+        recepcionistaReqInfo.login,
     });
 
   const recepcionista = new Recepcionista(recepcionistaReqInfo);
 
   recepcionista
     .save()
-    .then(recepcionista => {
+    .then((recepcionista) => {
       return res.send({
         recepcionista,
-        message: "Recepcionista salvo(a) com sucesso"
+        message: "Recepcionista salvo(a) com sucesso",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
@@ -57,12 +57,12 @@ exports.create = async (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao salvar Recepcionista"
+        message: err.message || "Erro ao salvar Recepcionista",
       });
     });
 };
@@ -72,14 +72,14 @@ exports.findAll = (req, res) => {
   var page = req.query.page || 1;
   var limitPerPage = 10;
 
-  var query = { nome: { $regex: filter } };
+  var query = { nome: { $regex: filter, $options: "i" } };
 
   Recepcionista.find(query)
     .sort({ nome: 1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
-    .then(recepcionistas => {
-      recepcionistas.map(recepcionista => {
+    .then((recepcionistas) => {
+      recepcionistas.map((recepcionista) => {
         if (req.user.role != "admin") {
           recepcionista.login = undefined;
           recepcionista.senha = undefined;
@@ -92,27 +92,27 @@ exports.findAll = (req, res) => {
       Recepcionista.count(query).exec((error, count) => {
         if (error)
           return res.status(500).send({
-            message: err.message || "Erro ao buscar lista de Recepcionistas"
+            message: err.message || "Erro ao buscar lista de Recepcionistas",
           });
 
         return res.send({
           recepcionistas,
           page,
           pageSize: limitPerPage,
-          numberOfResults: count
+          numberOfResults: count,
         });
       });
     })
-    .catch(err => {
+    .catch((err) => {
       return res.status(500).send({
-        message: err.message || "Erro ao buscar lista de Recepcionistas"
+        message: err.message || "Erro ao buscar lista de Recepcionistas",
       });
     });
 };
 
 exports.findOne = (req, res) => {
   Recepcionista.findById(req.params.recepcionistaId)
-    .then(recepcionista => {
+    .then((recepcionista) => {
       if (recepcionista) {
         if (req.user.role != "admin") {
           recepcionista.login = undefined;
@@ -124,17 +124,17 @@ exports.findOne = (req, res) => {
       }
 
       return res.status(404).send({
-        message: "Recepcionista não encontrado(a)"
+        message: "Recepcionista não encontrado(a)",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Recepcionista não encontrado(a)"
+          message: "Recepcionista não encontrado(a)",
         });
 
       return res.status(500).send({
-        message: "Erro ao buscar Recepcionista"
+        message: "Erro ao buscar Recepcionista",
       });
     });
 };
@@ -149,32 +149,32 @@ exports.update = async (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do(a) Recepcionista"
+        : "Erro nos dados do(a) Recepcionista",
     });
 
   if (await loginAlreadyExistsForAdminOrMedico(req.body.login))
     return res.status(400).send({
-      message: "Outro usuário do sistema já possui o login " + req.body.login
+      message: "Outro usuário do sistema já possui o login " + req.body.login,
     });
 
   Recepcionista.findByIdAndUpdate(req.params.recepcionistaId, req.body, {
-    new: true
+    new: true,
   })
-    .then(recepcionista => {
+    .then((recepcionista) => {
       if (recepcionista)
         return res.send({
           recepcionista,
-          message: "Recepcionista atualizado(a) com sucesso"
+          message: "Recepcionista atualizado(a) com sucesso",
         });
 
       return res.status(404).send({
-        message: "Recepcionista não encontrado(a)"
+        message: "Recepcionista não encontrado(a)",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Recepcionista não encontrado(a)"
+          message: "Recepcionista não encontrado(a)",
         });
 
       if (err.code === 11000) {
@@ -186,12 +186,12 @@ exports.update = async (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: "Erro ao atualizar Recepcionista"
+        message: "Erro ao atualizar Recepcionista",
       });
     });
 };

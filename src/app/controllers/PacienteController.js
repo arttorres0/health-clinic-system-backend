@@ -7,7 +7,7 @@ exports.create = (req, res) => {
     email: req.body.email,
     telefone: req.body.telefone,
     dataDeNascimento: req.body.dataDeNascimento,
-    ativo: true
+    ativo: true,
   };
 
   var validationError = Paciente.joiValidate(pacienteReqInfo);
@@ -17,17 +17,17 @@ exports.create = (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do(a) Paciente"
+        : "Erro nos dados do(a) Paciente",
     });
 
   const paciente = new Paciente(pacienteReqInfo);
 
   paciente
     .save()
-    .then(paciente => {
+    .then((paciente) => {
       return res.send({ paciente, message: "Paciente salvo(a) com sucesso" });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
@@ -37,12 +37,12 @@ exports.create = (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao salvar Paciente"
+        message: err.message || "Erro ao salvar Paciente",
       });
     });
 };
@@ -53,52 +53,52 @@ exports.findAll = (req, res) => {
   var page = req.query.page || 1;
   var limitPerPage = 10;
 
-  var query = { nome: { $regex: filter } };
+  var query = { nome: { $regex: filter, $options: "i" } };
   if (ativo != undefined) query.ativo = ativo;
 
   Paciente.find(query)
     .sort({ nome: 1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
-    .then(pacientes => {
+    .then((pacientes) => {
       Paciente.count(query).exec((error, count) => {
         if (error)
           return res.status(500).send({
-            message: err.message || "Erro ao buscar lista de Pacientes"
+            message: err.message || "Erro ao buscar lista de Pacientes",
           });
 
         return res.send({
           pacientes,
           page,
           pageSize: limitPerPage,
-          numberOfResults: count
+          numberOfResults: count,
         });
       });
     })
-    .catch(err => {
+    .catch((err) => {
       return res.status(500).send({
-        message: err.message || "Erro ao buscar lista de Pacientes"
+        message: err.message || "Erro ao buscar lista de Pacientes",
       });
     });
 };
 
 exports.findOne = (req, res) => {
   Paciente.findById(req.params.pacienteId)
-    .then(paciente => {
+    .then((paciente) => {
       if (paciente) return res.send({ paciente });
 
       return res.status(404).send({
-        message: "Paciente não encontrado(a)"
+        message: "Paciente não encontrado(a)",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Paciente não encontrado(a)"
+          message: "Paciente não encontrado(a)",
         });
 
       return res.status(500).send({
-        message: "Erro ao buscar Paciente"
+        message: "Erro ao buscar Paciente",
       });
     });
 };
@@ -111,25 +111,25 @@ exports.update = (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do(a) Paciente"
+        : "Erro nos dados do(a) Paciente",
     });
 
   Paciente.findByIdAndUpdate(req.params.pacienteId, req.body, { new: true })
-    .then(paciente => {
+    .then((paciente) => {
       if (paciente)
         return res.send({
           paciente,
-          message: "Paciente atualizado(a) com sucesso"
+          message: "Paciente atualizado(a) com sucesso",
         });
 
       return res.status(404).send({
-        message: "Paciente não encontrado(a)"
+        message: "Paciente não encontrado(a)",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Paciente não encontrado(a)"
+          message: "Paciente não encontrado(a)",
         });
 
       if (err.code === 11000) {
@@ -141,12 +141,12 @@ exports.update = (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: "Erro ao atualizar Paciente"
+        message: "Erro ao atualizar Paciente",
       });
     });
 };

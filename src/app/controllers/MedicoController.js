@@ -1,10 +1,10 @@
 const Medico = require("../models/Medico");
 const {
-  loginAlreadyExistsForAdminOrRecepcionista
+  loginAlreadyExistsForAdminOrRecepcionista,
 } = require("../helper/DatabaseFunctions");
 const {
   encryptPassword,
-  decryptPassword
+  decryptPassword,
 } = require("../helper/CryptoFunctions");
 
 exports.create = async (req, res) => {
@@ -18,7 +18,7 @@ exports.create = async (req, res) => {
     crm: req.body.crm,
     dataDeNascimento: req.body.dataDeNascimento,
     dataDeAdmissao: req.body.dataDeAdmissao,
-    ativo: true
+    ativo: true,
   };
 
   var validationError = Medico.joiValidate(medicoReqInfo);
@@ -28,23 +28,23 @@ exports.create = async (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do(a) Médico(a)"
+        : "Erro nos dados do(a) Médico(a)",
     });
 
   if (await loginAlreadyExistsForAdminOrRecepcionista(medicoReqInfo.login))
     return res.status(400).send({
       message:
-        "Outro usuário do sistema já possui o login " + medicoReqInfo.login
+        "Outro usuário do sistema já possui o login " + medicoReqInfo.login,
     });
 
   const medico = new Medico(medicoReqInfo);
 
   medico
     .save()
-    .then(medico => {
+    .then((medico) => {
       return res.send({ medico, message: "Médico(a) salvo(a) com sucesso" });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.code === 11000) {
         const duplicatedKey = Object.keys(err.keyValue)[0];
         const duplicatedValue = err.keyValue[duplicatedKey];
@@ -54,12 +54,12 @@ exports.create = async (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: err.message || "Erro ao salvar Médico(a)"
+        message: err.message || "Erro ao salvar Médico(a)",
       });
     });
 };
@@ -70,15 +70,15 @@ exports.findAll = (req, res) => {
   var page = req.query.page || 1;
   var limitPerPage = 10;
 
-  var query = { nome: { $regex: filter } };
+  var query = { nome: { $regex: filter, $options: "i" } };
   if (ativo != undefined) query.ativo = ativo;
 
   Medico.find(query)
     .sort({ nome: 1 })
     .skip(limitPerPage * page - limitPerPage)
     .limit(limitPerPage)
-    .then(medicos => {
-      medicos.map(medico => {
+    .then((medicos) => {
+      medicos.map((medico) => {
         if (req.user.role !== "admin") {
           medico.login = undefined;
           medico.senha = undefined;
@@ -91,27 +91,27 @@ exports.findAll = (req, res) => {
       Medico.count(query).exec((error, count) => {
         if (error)
           return res.status(500).send({
-            message: err.message || "Erro ao buscar lista de Médicos"
+            message: err.message || "Erro ao buscar lista de Médicos",
           });
 
         return res.send({
           medicos,
           page,
           pageSize: limitPerPage,
-          numberOfResults: count
+          numberOfResults: count,
         });
       });
     })
-    .catch(err => {
+    .catch((err) => {
       return res.status(500).send({
-        message: err.message || "Erro ao buscar lista de Médicos"
+        message: err.message || "Erro ao buscar lista de Médicos",
       });
     });
 };
 
 exports.findOne = (req, res) => {
   Medico.findById(req.params.medicoId)
-    .then(medico => {
+    .then((medico) => {
       if (medico) {
         if (req.user.role != "admin") {
           medico.login = undefined;
@@ -123,17 +123,17 @@ exports.findOne = (req, res) => {
       }
 
       return res.status(404).send({
-        message: "Médico(a) não encontrado(a)"
+        message: "Médico(a) não encontrado(a)",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Médico(a) não encontrado(a)"
+          message: "Médico(a) não encontrado(a)",
         });
 
       return res.status(500).send({
-        message: "Erro ao buscar Médico(a)"
+        message: "Erro ao buscar Médico(a)",
       });
     });
 };
@@ -148,30 +148,30 @@ exports.update = async (req, res) => {
       message: validationError.error.details[0].message
         ? "Formato inválido do campo " +
           validationError.error.details[0].context.key
-        : "Erro nos dados do(a) Médico(a)"
+        : "Erro nos dados do(a) Médico(a)",
     });
 
   if (await loginAlreadyExistsForAdminOrRecepcionista(req.body.login))
     return res.status(400).send({
-      message: "Outro usuário do sistema já possui o login " + req.body.login
+      message: "Outro usuário do sistema já possui o login " + req.body.login,
     });
 
   Medico.findByIdAndUpdate(req.params.medicoId, req.body, { new: true })
-    .then(medico => {
+    .then((medico) => {
       if (medico)
         return res.send({
           medico,
-          message: "Médico(a) atualizado(a) com sucesso"
+          message: "Médico(a) atualizado(a) com sucesso",
         });
 
       return res.status(404).send({
-        message: "Médico(a) não encontrado(a)"
+        message: "Médico(a) não encontrado(a)",
       });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId")
         return res.status(404).send({
-          message: "Médico(a) não encontrado(a)"
+          message: "Médico(a) não encontrado(a)",
         });
 
       if (err.code === 11000) {
@@ -183,12 +183,12 @@ exports.update = async (req, res) => {
             duplicatedKey +
             " " +
             duplicatedValue +
-            " já existente"
+            " já existente",
         });
       }
 
       return res.status(500).send({
-        message: "Erro ao atualizar Médico(a)"
+        message: "Erro ao atualizar Médico(a)",
       });
     });
 };
